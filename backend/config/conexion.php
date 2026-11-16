@@ -1,12 +1,11 @@
-
 <?php
 
-namespace App\config;
+namespace App\Config;
 
 use PDO;
 use PDOException;
 
-class Database {
+class Conexion {
 
     private static $instancia = null;
 
@@ -14,10 +13,10 @@ class Database {
     private $conexion;
 
     
-    private $host = "localhost";
-    private $dbname = "farmacias_web";
-    private $usuario = "root";
-    private $password = "";
+    private $host = "localhost:3306";
+    private $dbname = "bd_farmacia_web";
+    private $usuario = "Erick";
+    private $password = "usuarioitsj";
 
     private function __construct() {
 
@@ -44,6 +43,12 @@ class Database {
                 false
             );
 
+            if ($this->conexion) {
+                echo "Conexión exitosa a la base de datos.";
+            }else {
+                echo "Error al conectar con la base de datos.";
+            }
+
         } catch (PDOException $e) {
 
             throw new PDOException(
@@ -58,7 +63,7 @@ class Database {
     public static function getInstance() {
 
         if (self::$instancia === null) {
-            self::$instancia = new Database();
+            self::$instancia = new Conexion();
         }
 
         return self::$instancia;
