@@ -1,0 +1,302 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #F1F5F9;
+    min-height: 100vh;
+}
+
+.contenedor {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* MENÚ LATERAL */
+
+.sidebar {
+    width: 255px;
+    min-width: 255px;
+    background: #1E293B;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 18px;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 0 40px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sidebar-logo i {
+    font-size: 27px;
+    color: #93C5FD;
+}
+
+.menu-titulo {
+    color: #94A3B8;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 0 12px;
+    margin-bottom: 12px;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.menu-enlace {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px;
+    border-radius: 7px;
+    color: #CBD5E1;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.menu-enlace i {
+    font-size: 19px;
+}
+
+.menu-enlace:hover,
+.menu-enlace.activo {
+    background: #334155;
+    color: white;
+}
+
+.menu-enlace.activo {
+    border-left: 3px solid #60A5FA;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 25px;
+    border-top: 1px solid #334155;
+}
+
+
+/* CONTENIDO PRINCIPAL */
+
+.contenido {
+    flex: 1;
+    min-width: 0;
+    padding: 35px;
+}
+
+.encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.encabezado h1 {
+    color: #1E293B;
+    font-size: 27px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.encabezado p {
+    color: #64748B;
+    font-size: 14px;
+    margin: 0;
+}
+
+.usuario-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.usuario-info i {
+    font-size: 27px;
+}
+
+
+/* SECCIONES */
+
+.seccion-estadisticas,
+.seccion-accesos {
+    margin-bottom: 40px;
+}
+
+.seccion-estadisticas h2,
+.seccion-accesos h2 {
+    color: #334155;
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 22px;
+}
+
+
+/* TARJETAS DE ESTADÍSTICAS */
+
+.tarjeta-estadistica {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    height: 100%;
+    transition: 0.3s;
+}
+
+.tarjeta-estadistica:hover,
+.tarjeta-acceso:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+}
+
+.tarjeta-icono {
+    min-width: 58px;
+    width: 58px;
+    height: 58px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.icono-medicos {
+    background: #DBEAFE;
+    color: #2563EB;
+}
+
+.icono-pacientes {
+    background: #D1FAE5;
+    color: #059669;
+}
+
+.icono-recetas {
+    background: #F3E8FF;
+    color: #9333EA;
+}
+
+.tarjeta-estadistica p {
+    color: #64748B;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.tarjeta-estadistica h3 {
+    color: #1E293B;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.tarjeta-estadistica span {
+    color: #94A3B8;
+    font-size: 11px;
+}
+
+
+/* ACCESOS RÁPIDOS */
+
+.tarjeta-acceso {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    height: 100%;
+    transition: 0.3s;
+}
+
+.tarjeta-acceso > i {
+    color: #334E68;
+    font-size: 28px;
+}
+
+.tarjeta-acceso h3 {
+    color: #1E293B;
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 18px;
+    margin-bottom: 10px;
+}
+
+.tarjeta-acceso p {
+    color: #64748B;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.tarjeta-acceso a {
+    text-decoration: none;
+    color: #2563EB;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.tarjeta-acceso a:hover {
+    color: #1D4ED8;
+}
+
+
+/* DISEÑO RESPONSIVO */
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 75px;
+        min-width: 75px;
+        padding: 20px 10px;
+    }
+
+    .sidebar-logo span,
+    .menu-enlace span,
+    .menu-titulo {
+        display: none;
+    }
+
+    .sidebar-logo {
+        padding-bottom: 35px;
+    }
+
+    .sidebar-logo i {
+        font-size: 25px;
+    }
+
+    .menu-enlace {
+        justify-content: center;
+        padding: 13px 5px;
+    }
+
+    .menu-enlace i {
+        font-size: 21px;
+    }
+
+    .contenido {
+        padding: 22px 15px;
+    }
+
+    .encabezado {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+}
