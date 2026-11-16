@@ -1,27 +1,39 @@
-
 <?php
-//Esto nos permitirá mantener organizadas las clases sin escribir require_once para cada una.
+
 spl_autoload_register(function ($clase) {
 
-    // Identificar el namespace principal
     $prefijo = 'App\\';
 
-    // Comprobar que la clase pertenezca a nuestra aplicación
+    // Verificar que la clase pertenezca a nuestro proyecto
     if (strpos($clase, $prefijo) !== 0) {
         return;
     }
 
-    // Eliminar el prefijo App\
+    // Quitar el prefijo App\
     $clase = substr($clase, strlen($prefijo));
 
-    // Convertir namespaces en rutas
-    $ruta = str_replace('\\', DIRECTORY_SEPARATOR, $clase);
+    // Separar el namespace de la clase
+    $partes = explode('\\', $clase);
 
-    // Construir la ruta del archivo
+    // Convertir el nombre de la carpeta a minúsculas
+    $carpeta = strtolower(array_shift($partes));
+
+    // Obtener el nombre de la clase
+    $nombreArchivo = array_pop($partes);
+
+    // Construir la ruta
+    $subruta = '';
+
+    if (!empty($partes)) {
+        $subruta = implode(DIRECTORY_SEPARATOR, $partes)
+                 . DIRECTORY_SEPARATOR;
+    }
+
     $archivo = dirname(__DIR__) . DIRECTORY_SEPARATOR .
-               $ruta . '.php';
+               $carpeta . DIRECTORY_SEPARATOR .
+               $subruta . $nombreArchivo . '.php';
 
-    // Comprobar si existe el archivo
+    // Cargar el archivo si existe
     if (file_exists($archivo)) {
         require_once $archivo;
     }
