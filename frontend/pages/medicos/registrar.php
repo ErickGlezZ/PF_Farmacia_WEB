@@ -1,3 +1,14 @@
+<?php
+
+session_start();
+
+// Recuperar los datos anteriores, si existen
+$datosMedico = $_SESSION['datos_medico'] ?? [];
+
+// Limpiar los datos guardados en la sesión
+unset($_SESSION['datos_medico']);
+
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -41,7 +52,7 @@
                     <span>Inicio</span>
                 </a>
 
-                <a href="listar.php" class="menu-enlace activo">
+                <a href="consultar.php" class="menu-enlace activo">
                     <i class="bi bi-person-badge"></i>
                     <span>Médicos</span>
                 </a>
@@ -72,6 +83,27 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <main class="contenido">
+
+            <!-- MENSAJE DE ALERTA -->
+            <?php if (isset($_SESSION['mensaje'])): ?>
+
+                <div class="alert alert-<?= htmlspecialchars($_SESSION['tipo_mensaje'] ?? 'danger', ENT_QUOTES, 'UTF-8') ?> alert-dismissible fade show"
+                     role="alert">
+
+                    <?= htmlspecialchars($_SESSION['mensaje'], ENT_QUOTES, 'UTF-8') ?>
+
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert"></button>
+
+                </div>
+
+                <?php
+                unset($_SESSION['mensaje']);
+                unset($_SESSION['tipo_mensaje']);
+                ?>
+
+            <?php endif; ?>
+
 
             <!-- ENCABEZADO -->
             <header class="encabezado">
@@ -126,7 +158,7 @@
                     </div>
 
 
-                    <form action="#" method="POST">
+                    <form action="../../scripts/procesar_altas_medicos.php" method="POST">
 
                         <!-- IDENTIFICACIÓN -->
                         <div class="grupo-formulario">
@@ -154,6 +186,7 @@
                                         pattern="[0-9]{11}"
                                         placeholder="Ej. 12345678901"
                                         required
+                                        value="<?= htmlspecialchars($datosMedico['SSN'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                     >
 
                                     <small class="form-text">
@@ -191,6 +224,7 @@
                                         maxlength="50"
                                         placeholder="Nombre del médico"
                                         required
+                                        value="<?= htmlspecialchars($datosMedico['Nombre'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                     >
 
                                 </div>
@@ -210,6 +244,7 @@
                                         maxlength="50"
                                         placeholder="Primer apellido"
                                         required
+                                        value="<?= htmlspecialchars($datosMedico['Primer_Ap'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                     >
 
                                 </div>
@@ -229,6 +264,7 @@
                                         maxlength="50"
                                         placeholder="Segundo apellido"
                                         required
+                                        value="<?= htmlspecialchars($datosMedico['Segundo_Ape'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                     >
 
                                 </div>
@@ -262,6 +298,7 @@
                                         maxlength="50"
                                         placeholder="Ej. Cardiología"
                                         required
+                                        value="<?= htmlspecialchars($datosMedico['Especialidad'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                     >
 
                                 </div>
@@ -282,6 +319,7 @@
                                         step="1"
                                         placeholder="Ej. 5"
                                         required
+                                        value="<?= htmlspecialchars($datosMedico['Años_Experiencia'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                     >
 
                                 </div>
