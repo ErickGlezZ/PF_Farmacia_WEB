@@ -5,22 +5,16 @@ session_start();
 // Cargar el autoload
 require_once __DIR__ . '/../../../backend/config/autoload.php';
 
+use App\facade\FarmaciaFacade;
+
 // Obtener los médicos de la base de datos
 try {
 
-    // Obtener conexión
-    $conexionBD = \App\config\conexion::getInstance();
-    $conexion = $conexionBD->getConnection();
-
-    // Crear las dependencias
-    $medicoDAO = new \App\DAO\MedicoDAO($conexion);
-
-    $medicoService = new \App\Services\MedicoService($medicoDAO);
-
-    $medicoController = new \App\Controllers\MedicoController($medicoService);
+    // Crear la fachada
+    $farmacia = new FarmaciaFacade();
 
     // Consultar todos los médicos
-    $medicos = $medicoController->listar();
+    $medicos = $farmacia->listarMedicos();
 
     $errorListado = null;
 

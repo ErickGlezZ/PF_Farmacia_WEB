@@ -5,6 +5,8 @@ session_start();
 // Cargar el autoload
 require_once __DIR__ . '/../../backend/config/Autoload.php';
 
+use App\facade\FarmaciaFacade;
+
 // Verificar que la petición sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../pages/medicos/consultar.php");
@@ -23,19 +25,11 @@ if (!isset($_POST['id_Medico']) || !ctype_digit($_POST['id_Medico']) || (int)$_P
 
 try {
 
-    // Obtener la conexión
-    $conexionBD = \App\config\conexion::getInstance();
-    $conexion = $conexionBD->getConnection();
-
-    // Crear las dependencias
-    $medicoDAO = new \App\DAO\MedicoDAO($conexion);
-
-    $medicoService = new \App\Services\MedicoService($medicoDAO);
-
-    $medicoController = new \App\Controllers\MedicoController($medicoService);
+    // Crear la fachada
+    $farmacia = new FarmaciaFacade();
 
     // Enviar el ID al controlador
-    $resultado = $medicoController->eliminar((int)$_POST['id_Medico']);
+    $resultado = $farmacia->eliminarMedico((int)$_POST['id_Medico']);
 
     if ($resultado) {
 

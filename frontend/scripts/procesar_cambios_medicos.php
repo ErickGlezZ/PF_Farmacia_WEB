@@ -1,10 +1,11 @@
-
 <?php
 
 session_start();
 
 // Cargar el autoload
 require_once __DIR__ . '/../../backend/config/Autoload.php';
+
+use App\facade\FarmaciaFacade;
 
 // Verificar que la petición sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -28,19 +29,11 @@ $id = (int) $id;
 
 try {
 
-    // Obtener conexión a la base de datos
-    $conexionBD = \App\config\conexion::getInstance();
-    $conexion = $conexionBD->getConnection();
-
-    // Crear las dependencias
-    $medicoDAO = new \App\DAO\MedicoDAO($conexion);
-
-    $medicoService = new \App\Services\MedicoService($medicoDAO);
-
-    $medicoController = new \App\Controllers\MedicoController($medicoService);
+    // Crear la fachada
+    $farmacia = new FarmaciaFacade();
 
     // Enviar los datos al controlador para actualizar
-    $medicoController->actualizar($_POST);
+    $farmacia->actualizarMedico($_POST);
 
     // Limpiar datos anteriores
     unset($_SESSION['datos_medico_edicion']);

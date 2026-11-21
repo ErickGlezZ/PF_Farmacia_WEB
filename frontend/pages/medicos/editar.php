@@ -5,6 +5,8 @@ session_start();
 // Cargar el autoload
 require_once __DIR__ . '/../../../backend/config/autoload.php';
 
+use App\facade\FarmaciaFacade;
+
 // Validar el ID recibido
 if (
     !isset($_GET['id']) ||
@@ -22,17 +24,11 @@ $id = (int) $_GET['id'];
 
 try {
 
-    // Obtener conexión
-    $conexionBD = \App\config\conexion::getInstance();
-    $conexion = $conexionBD->getConnection();
-
-    // Crear dependencias
-    $medicoDAO = new \App\DAO\MedicoDAO($conexion);
-    $medicoService = new \App\Services\MedicoService($medicoDAO);
-    $medicoController = new \App\Controllers\MedicoController($medicoService);
+    // Crear la fachada
+    $farmacia = new FarmaciaFacade();
 
     // Consultar médico
-    $medico = $medicoController->consultar($id);
+    $medico = $farmacia->consultarMedico($id);
 
     // Verificar que exista
     if (!$medico) {
