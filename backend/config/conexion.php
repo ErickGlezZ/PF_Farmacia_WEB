@@ -43,12 +43,6 @@ class Conexion {
                 false
             );
 
-            if ($this->conexion) {
-                echo "Conexión exitosa a la base de datos.";
-            }else {
-                echo "Error al conectar con la base de datos.";
-            }
-
         } catch (PDOException $e) {
 
             throw new PDOException(
