@@ -284,24 +284,59 @@ unset($_SESSION['datos_medico']);
 
                             <div class="row g-3">
 
-                                <div class="col-md-6">
+                                
+                            <div class="col-md-6">
 
-                                    <label for="Especialidad" class="form-label">
-                                        Especialidad *
-                                    </label>
+                                <label for="Especialidad" class="form-label">
+                                    Especialidad *
+                                </label>
 
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="Especialidad"
-                                        name="Especialidad"
-                                        maxlength="50"
-                                        placeholder="Ej. Cardiología"
-                                        required
-                                        value="<?= htmlspecialchars($datosMedico['Especialidad'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                                    >
+                                <select
+                                    class="form-select"
+                                    id="Especialidad"
+                                    name="Especialidad"
+                                    required
+                                >
+                                    <option value="" disabled
+                                        <?= empty($datosMedico['Especialidad']) ? 'selected' : '' ?>>
+                                        Selecciona una especialidad
+                                    </option>
 
-                                </div>
+                                    <?php
+                                    $especialidades = [
+                                        'Medicina General',
+                                        'Cardiología',
+                                        'Dermatología',
+                                        'Pediatría',
+                                        'Ginecología y Obstetricia',
+                                        'Neurología',
+                                        'Oftalmología',
+                                        'Traumatología y Ortopedia',
+                                        'Psiquiatría',
+                                        'Urología',
+                                        'Gastroenterología',
+                                        'Oncología',
+                                        'Neumología',
+                                        'Nefrología',
+                                        'Otorrinolaringología',
+                                        'Cirugía General',
+                                        'Medicina Interna'
+                                    ];
+
+                                    foreach ($especialidades as $especialidad):
+                                    ?>
+                                        <option
+                                            value="<?= htmlspecialchars($especialidad, ENT_QUOTES, 'UTF-8') ?>"
+                                            <?= (($datosMedico['Especialidad'] ?? '') === $especialidad) ? 'selected' : '' ?>
+                                        >
+                                            <?= htmlspecialchars($especialidad, ENT_QUOTES, 'UTF-8') ?>
+                                        </option>
+                                    <?php endforeach; ?>
+
+                                </select>
+
+                            </div>
+
 
 
                                 <div class="col-md-6">
@@ -316,6 +351,7 @@ unset($_SESSION['datos_medico']);
                                         id="Años_Experiencia"
                                         name="Años_Experiencia"
                                         min="1"
+                                        max="80"
                                         step="1"
                                         placeholder="Ej. 5"
                                         required

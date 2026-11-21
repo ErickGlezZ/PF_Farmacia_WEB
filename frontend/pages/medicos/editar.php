@@ -346,23 +346,64 @@ $experiencia = $datosMedico['Años_Experiencia'] ?? $medico->getAñosExperiencia
 
                             <div class="row g-3">
 
+                                
                                 <div class="col-md-6">
 
                                     <label for="Especialidad" class="form-label">
                                         Especialidad *
                                     </label>
 
-                                    <input
-                                        type="text"
-                                        class="form-control"
+                                    <?php
+                                    $especialidadActual = $datosMedico['Especialidad']
+                                        ?? $medico->getEspecialidad();
+                                    ?>
+
+                                    <select
+                                        class="form-select"
                                         id="Especialidad"
                                         name="Especialidad"
-                                        maxlength="50"
                                         required
-                                        value="<?= htmlspecialchars((string)$especialidad, ENT_QUOTES, 'UTF-8') ?>"
                                     >
+                                        <option value="" disabled>Selecciona una especialidad</option>
+
+                                        <?php
+                                        $especialidades = [
+                                            'Medicina General',
+                                            'Cardiología',
+                                            'Dermatología',
+                                            'Pediatría',
+                                            'Ginecología y Obstetricia',
+                                            'Neurología',
+                                            'Oftalmología',
+                                            'Traumatología y Ortopedia',
+                                            'Psiquiatría',
+                                            'Urología',
+                                            'Gastroenterología',
+                                            'Endocrinología',
+                                            'Oncología',
+                                            'Neumología',
+                                            'Nefrología',
+                                            'Otorrinolaringología',
+                                            'Cirugía General',
+                                            'Medicina Interna',
+                                            'Anestesiología',
+                                            'Radiología'
+                                        ];
+
+                                        foreach ($especialidades as $especialidad):
+                                        ?>
+                                            <option
+                                                value="<?= htmlspecialchars($especialidad, ENT_QUOTES, 'UTF-8') ?>"
+                                                <?= ($especialidadActual === $especialidad) ? 'selected' : '' ?>
+                                            >
+                                                <?= htmlspecialchars($especialidad, ENT_QUOTES, 'UTF-8') ?>
+                                            </option>
+                                        <?php endforeach; ?>
+
+                                    </select>
 
                                 </div>
+
 
 
                                 <div class="col-md-6">
@@ -377,6 +418,7 @@ $experiencia = $datosMedico['Años_Experiencia'] ?? $medico->getAñosExperiencia
                                         id="Años_Experiencia"
                                         name="Años_Experiencia"
                                         min="1"
+                                        max="80"
                                         step="1"
                                         required
                                         value="<?= htmlspecialchars((string)$experiencia, ENT_QUOTES, 'UTF-8') ?>"
