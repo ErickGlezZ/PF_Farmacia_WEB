@@ -1,3 +1,44 @@
+<?php
+
+session_start();
+
+// Cargar el autoload
+require_once __DIR__ . '/../../../backend/config/autoload.php';
+
+// Obtener los médicos de la base de datos
+try {
+
+    // Obtener conexión
+    $conexionBD = \App\config\conexion::getInstance();
+    $conexion = $conexionBD->getConnection();
+
+    // Crear las dependencias
+    $medicoDAO = new \App\DAO\MedicoDAO($conexion);
+
+    $medicoService = new \App\Services\MedicoService($medicoDAO);
+
+    $medicoController = new \App\Controllers\MedicoController($medicoService);
+
+    // Consultar todos los médicos
+    $medicos = $medicoController->listar();
+
+    $errorListado = null;
+
+} catch (Throwable $e) {
+
+    $medicos = [];
+    $errorListado = $e->getMessage();
+
+}
+
+// Tipo de mensaje permitido
+$tipoMensaje = $_SESSION['tipo_mensaje'] ?? 'info';
+
+if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
+    $tipoMensaje = 'info';
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -15,9 +56,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <!-- CSS personalizado -->
-    
     <link rel="stylesheet" href="../../css/dashboard.css">
     <link rel="stylesheet" href="../../css/medicos.css">
+
 </head>
 
 <body>
@@ -41,7 +82,7 @@
                     <span>Inicio</span>
                 </a>
 
-                <a href="listar.php" class="menu-enlace activo">
+                <a href="consultar.php" class="menu-enlace activo">
                     <i class="bi bi-person-badge"></i>
                     <span>Médicos</span>
                 </a>
@@ -72,6 +113,38 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <main class="contenido">
+
+            <!-- MENSAJES DE SESIÓN -->
+            <?php if (isset($_SESSION['mensaje'])): ?>
+
+                <div class="alert alert-<?= $tipoMensaje ?> alert-dismissible fade show"
+                     role="alert">
+
+                    <?= htmlspecialchars($_SESSION['mensaje'], ENT_QUOTES, 'UTF-8') ?>
+
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert" aria-label="Cerrar"></button>
+
+                </div>
+
+                <?php
+                unset($_SESSION['mensaje']);
+                unset($_SESSION['tipo_mensaje']);
+                ?>
+
+            <?php endif; ?>
+
+
+            <!-- ERROR DE CONSULTA -->
+            <?php if ($errorListado !== null): ?>
+
+                <div class="alert alert-danger" role="alert">
+                    No fue posible consultar los médicos:
+                    <?= htmlspecialchars($errorListado, ENT_QUOTES, 'UTF-8') ?>
+                </div>
+
+            <?php endif; ?>
+
 
             <!-- ENCABEZADO -->
             <header class="encabezado">
@@ -125,7 +198,7 @@
 
                     <span class="total-registros">
                         <i class="bi bi-person-badge"></i>
-                        Médicos registrados: 2
+                        Médicos registrados: <?= count($medicos) ?>
                     </span>
 
                 </div>
@@ -151,140 +224,144 @@
 
                             <tbody id="tablaMedicos">
 
-                                <!-- REGISTRO 1 -->
-                                <tr>
+                                <?php if (count($medicos) > 0): ?>
 
-                                    <td>1</td>
+                                    <?php foreach ($medicos as $medico): ?>
 
-                                    <td>
-                                        <div class="medico-nombre">
-                                            <div class="avatar-medico">CG</div>
+                                        <?php
+                                        // Obtener los datos del médico
+                                        $id = $medico->getIdMedico();
+                                        $ssn = $medico->getSSN();
+                                        $nombre = $medico->getNombre();
+                                        $primerAp = $medico->getPrimerAp();
+                                        $segundoAp = $medico->getSegundoApe();
+                                        $especialidad = $medico->getEspecialidad();
+                                        $experiencia = $medico->getAñosExperiencia();
 
-                                            <div>
-                                                <strong>Carlos González</strong>
-                                                <small>López</small>
-                                            </div>
-                                        </div>
-                                    </td>
+                                        // Iniciales para el avatar
+                                        $iniciales = strtoupper(
+                                            substr($nombre, 0, 1) .
+                                            substr($primerAp, 0, 1)
+                                        );
+                                        ?>
 
-                                    <td>12345678901</td>
+                                        <tr>
 
-                                    <td>
-                                        <span class="especialidad">
-                                            Cardiología
-                                        </span>
-                                    </td>
+                                            <td>
+                                                <?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>
+                                            </td>
 
-                                    <td>5 años</td>
+                                            <td>
 
-                                    <td>
-                                        <div class="acciones">
+                                                <div class="medico-nombre">
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-detalles"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalDetalles"
-                                                data-id="1"
-                                                data-ssn="12345678901"
-                                                data-nombre="Carlos"
-                                                data-primer-ap="González"
-                                                data-segundo-ap="López"
-                                                data-especialidad="Cardiología"
-                                                data-experiencia="5"
-                                            >
-                                                <i class="bi bi-eye"></i>
-                                                Detalles
-                                            </button>
+                                                    <div class="avatar-medico">
+                                                        <?= htmlspecialchars($iniciales, ENT_QUOTES, 'UTF-8') ?>
+                                                    </div>
 
-                                            <a
-                                                href="editar.php?id=1"
-                                                class="btn btn-editar"
-                                                title="Editar médico"
-                                            >
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
+                                                    <div>
+                                                        <strong>
+                                                            <?= htmlspecialchars($nombre . ' ' . $primerAp, ENT_QUOTES, 'UTF-8') ?>
+                                                        </strong>
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-eliminar"
-                                                title="Eliminar médico"
-                                            >
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
+                                                        <small>
+                                                            <?= htmlspecialchars($segundoAp, ENT_QUOTES, 'UTF-8') ?>
+                                                        </small>
+                                                    </div>
 
-                                        </div>
-                                    </td>
+                                                </div>
 
-                                </tr>
+                                            </td>
+
+                                            <td>
+                                                <?= htmlspecialchars($ssn, ENT_QUOTES, 'UTF-8') ?>
+                                            </td>
+
+                                            <td>
+                                                <span class="especialidad">
+                                                    <?= htmlspecialchars($especialidad, ENT_QUOTES, 'UTF-8') ?>
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <?= htmlspecialchars((string)$experiencia, ENT_QUOTES, 'UTF-8') ?>
+                                                años
+                                            </td>
+
+                                            <td>
+
+                                                <div class="acciones">
+
+                                                    <!-- BOTÓN DETALLES -->
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-detalles"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalDetalles"
+                                                        data-id="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                                        data-ssn="<?= htmlspecialchars($ssn, ENT_QUOTES, 'UTF-8') ?>"
+                                                        data-nombre="<?= htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') ?>"
+                                                        data-primer-ap="<?= htmlspecialchars($primerAp, ENT_QUOTES, 'UTF-8') ?>"
+                                                        data-segundo-ap="<?= htmlspecialchars($segundoAp, ENT_QUOTES, 'UTF-8') ?>"
+                                                        data-especialidad="<?= htmlspecialchars($especialidad, ENT_QUOTES, 'UTF-8') ?>"
+                                                        data-experiencia="<?= htmlspecialchars((string)$experiencia, ENT_QUOTES, 'UTF-8') ?>"
+                                                    >
+                                                        <i class="bi bi-eye"></i>
+                                                        Detalles
+                                                    </button>
 
 
-                                <!-- REGISTRO 2 -->
-                                <tr>
+                                                    <!-- BOTÓN EDITAR -->
+                                                    <a
+                                                        href="editar.php?id=<?= urlencode((string)$id) ?>"
+                                                        class="btn btn-editar"
+                                                        title="Editar médico"
+                                                    >
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
 
-                                    <td>2</td>
 
-                                    <td>
-                                        <div class="medico-nombre">
-                                            <div class="avatar-medico">ML</div>
+                                                    <!-- FORMULARIO ELIMINAR -->
+                                                    <form
+                                                        action="../../scripts/procesar_bajas_medicos.php"
+                                                        method="POST"
+                                                        class="d-inline"
+                                                        onsubmit="return confirm('¿Estás seguro de eliminar este médico?');"
+                                                    >
 
-                                            <div>
-                                                <strong>María López</strong>
-                                                <small>Hernández</small>
-                                            </div>
-                                        </div>
-                                    </td>
+                                                        <input
+                                                            type="hidden"
+                                                            name="id_Medico"
+                                                            value="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                                        >
 
-                                    <td>98765432101</td>
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-eliminar"
+                                                            title="Eliminar médico"
+                                                        >
+                                                            <i class="bi bi-trash3"></i>
+                                                        </button>
 
-                                    <td>
-                                        <span class="especialidad">
-                                            Pediatría
-                                        </span>
-                                    </td>
+                                                    </form>
 
-                                    <td>8 años</td>
+                                                </div>
 
-                                    <td>
-                                        <div class="acciones">
+                                            </td>
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-detalles"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalDetalles"
-                                                data-id="2"
-                                                data-ssn="98765432101"
-                                                data-nombre="María"
-                                                data-primer-ap="López"
-                                                data-segundo-ap="Hernández"
-                                                data-especialidad="Pediatría"
-                                                data-experiencia="8"
-                                            >
-                                                <i class="bi bi-eye"></i>
-                                                Detalles
-                                            </button>
+                                        </tr>
 
-                                            <a
-                                                href="editar.php?id=2"
-                                                class="btn btn-editar"
-                                                title="Editar médico"
-                                            >
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
+                                    <?php endforeach; ?>
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-eliminar"
-                                                title="Eliminar médico"
-                                            >
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
+                                <?php else: ?>
 
-                                        </div>
-                                    </td>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            No hay médicos registrados.
+                                        </td>
+                                    </tr>
 
-                                </tr>
+                                <?php endif; ?>
 
                             </tbody>
 
@@ -292,26 +369,13 @@
 
                     </div>
 
-                    <!-- PAGINACIÓN VISUAL -->
+
+                    <!-- PIE DE TABLA -->
                     <div class="tabla-pie">
 
-                        <span>Mostrando 2 médicos</span>
-
-                        <nav>
-                            <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#">Anterior</a>
-                                </li>
-
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <span>
+                            Mostrando <?= count($medicos) ?> médicos
+                        </span>
 
                     </div>
 
@@ -425,10 +489,11 @@
     <!-- BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- FUNCIONALIDAD VISUAL -->
+
+    <!-- FUNCIONALIDAD -->
     <script>
 
-        // BUSCADOR VISUAL
+        // BUSCADOR
         const buscarMedico = document.getElementById('buscarMedico');
 
         buscarMedico.addEventListener('input', function () {
@@ -465,14 +530,19 @@
 
             document.getElementById('detalleId').textContent = id;
             document.getElementById('detalleSSN').textContent = ssn;
-            document.getElementById('detalleNombre').textContent = nombre + ' ' + primerAp;
-            document.getElementById('detalleEspecialidad').textContent = especialidad;
+
+            document.getElementById('detalleNombre').textContent =
+                nombre + ' ' + primerAp;
+
+            document.getElementById('detalleEspecialidad').textContent =
+                especialidad;
 
             document.getElementById('detalleNombreCampo').textContent = nombre;
             document.getElementById('detallePrimerAp').textContent = primerAp;
             document.getElementById('detalleSegundoAp').textContent = segundoAp;
             document.getElementById('detalleEspecialidadCampo').textContent = especialidad;
-            document.getElementById('detalleExperiencia').textContent = experiencia + ' años';
+            document.getElementById('detalleExperiencia').textContent =
+                experiencia + ' años';
 
         });
 
