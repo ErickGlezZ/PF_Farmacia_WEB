@@ -51,7 +51,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../../css/dashboard.css">
-    <link rel="stylesheet" href="../../css/medicos.css">
+    <link rel="stylesheet" href="../../css/listados.css">
 
 </head>
 
@@ -81,12 +81,12 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                     <span>Médicos</span>
                 </a>
 
-                <a href="../pacientes/listar.php" class="menu-enlace">
+                <a href="../pacientes/consultar.php" class="menu-enlace">
                     <i class="bi bi-people"></i>
                     <span>Pacientes</span>
                 </a>
 
-                <a href="../recetas/listar.php" class="menu-enlace">
+                <a href="../recetas/consultar.php" class="menu-enlace">
                     <i class="bi bi-file-medical"></i>
                     <span>Recetas</span>
                 </a>

@@ -27,7 +27,7 @@ unset($_SESSION['datos_medico']);
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../../css/dashboard.css">
-    <link rel="stylesheet" href="../../css/medicos.css">
+    <link rel="stylesheet" href="../../css/listados.css">
     <link rel="stylesheet" href="../../css/registrar_medico.css">
 </head>
 
