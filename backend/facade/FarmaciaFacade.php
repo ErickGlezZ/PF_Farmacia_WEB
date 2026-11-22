@@ -2,7 +2,7 @@
 
 namespace App\facade;
 
-use App\config\conexion;
+use App\config\Conexion;
 use App\DAO\MedicoDAO;
 use App\Services\MedicoService;
 use App\Controllers\MedicoController;
@@ -14,7 +14,7 @@ class FarmaciaFacade {
     public function __construct() {
 
         // Obtener la conexión a la base de datos
-        $conexionBD = conexion::getInstance();
+        $conexionBD = Conexion::getInstance();
         $conexion = $conexionBD->getConnection();
 
         // Construir las capas de médicos
