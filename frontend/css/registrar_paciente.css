@@ -1,0 +1,191 @@
+
+/* SECCIÓN DE REGISTRO */
+
+.seccion-registro {
+    width: 100%;
+}
+
+.registro-superior {
+    margin-bottom: 22px;
+}
+
+.volver-listado {
+    display: inline-block;
+    color: #64748B;
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 17px;
+}
+
+.volver-listado:hover {
+    color: #233B55;
+}
+
+.registro-superior h2 {
+    color: #334155;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.registro-superior p {
+    color: #64748B;
+    font-size: 13px;
+    margin: 0;
+}
+
+/* CONTENEDOR DEL FORMULARIO */
+
+.formulario-contenedor {
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 11px;
+    padding: 28px;
+    max-width: 1050px;
+}
+
+/* ENCABEZADO DEL FORMULARIO */
+
+.formulario-encabezado {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 23px;
+    border-bottom: 1px solid #E2E8F0;
+    margin-bottom: 25px;
+}
+
+.icono-formulario {
+    width: 48px;
+    height: 48px;
+    background: #E2EAF3;
+    color: #334E68;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+}
+
+.formulario-encabezado h3 {
+    color: #1E293B;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.formulario-encabezado p {
+    color: #94A3B8;
+    font-size: 12px;
+    margin: 0;
+}
+
+/* GRUPOS DEL FORMULARIO */
+
+.grupo-formulario {
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.grupo-formulario h4 {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.grupo-formulario h4 i {
+    color: #64748B;
+    margin-right: 7px;
+}
+
+/* CAMPOS */
+
+.grupo-formulario .form-label {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.grupo-formulario .form-control,
+.grupo-formulario .form-select {
+    min-height: 43px;
+    border: 1px solid #CBD5E1;
+    border-radius: 7px;
+    color: #334155;
+    font-size: 13px;
+}
+
+.grupo-formulario .form-control::placeholder {
+    color: #A0AEC0;
+}
+
+.grupo-formulario .form-control:focus,
+.grupo-formulario .form-select:focus {
+    border-color: #64748B;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12);
+}
+
+.grupo-formulario .form-text {
+    color: #94A3B8;
+    font-size: 11px;
+}
+
+/* BOTONES */
+
+.formulario-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 5px;
+}
+
+.btn-cancelar,
+.btn-guardar {
+    padding: 10px 19px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.btn-cancelar {
+    background: #F1F5F9;
+    color: #475569;
+    border: 1px solid #E2E8F0;
+}
+
+.btn-cancelar:hover {
+    background: #E2E8F0;
+    color: #1E293B;
+}
+
+.btn-guardar {
+    background: #233B55;
+    color: white;
+    border: none;
+}
+
+.btn-guardar:hover {
+    background: #334E68;
+    color: white;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    .formulario-contenedor {
+        padding: 20px 16px;
+    }
+
+    .formulario-acciones {
+        flex-direction: column-reverse;
+    }
+
+    .formulario-acciones .btn {
+        width: 100%;
+    }
+
+}
