@@ -103,7 +103,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                     <span>Pacientes</span>
                 </a>
 
-                <a href="../recetas/listar.php" class="menu-enlace">
+                <a href="../recetas/consultar.php" class="menu-enlace">
                     <i class="bi bi-file-medical"></i>
                     <span>Recetas</span>
                 </a>
