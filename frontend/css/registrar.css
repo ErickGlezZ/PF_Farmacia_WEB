@@ -1,4 +1,3 @@
-
 /* SECCIÓN DE REGISTRO */
 
 .seccion-registro {
@@ -109,7 +108,8 @@
     margin-bottom: 8px;
 }
 
-.grupo-formulario .form-control {
+.grupo-formulario .form-control,
+.grupo-formulario .form-select {
     min-height: 43px;
     border: 1px solid #CBD5E1;
     border-radius: 7px;
@@ -121,7 +121,8 @@
     color: #A0AEC0;
 }
 
-.grupo-formulario .form-control:focus {
+.grupo-formulario .form-control:focus,
+.grupo-formulario .form-select:focus {
     border-color: #64748B;
     box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12);
 }
@@ -186,4 +187,7 @@
         width: 100%;
     }
 
+    .formulario-acciones .btn {
+        width: 100%;
+    }
 }
