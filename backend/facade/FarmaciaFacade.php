@@ -5,15 +5,19 @@ namespace App\facade;
 use App\Config\Conexion;
 use App\DAO\MedicoDAO;
 use App\DAO\PacienteDAO;
+use App\DAO\RecetaDAO;
 use App\Services\MedicoService;
 use App\Services\PacienteService;
+use App\Services\RecetaService;
 use App\Controllers\MedicoController;
 use App\Controllers\PacienteController;
+use App\Controllers\RecetaController;
 
 class FarmaciaFacade {
 
     private $medicoController;
     private $pacienteController;
+    private $recetaController;
 
     public function __construct() {
 
@@ -30,6 +34,11 @@ class FarmaciaFacade {
         $pacienteDAO = new PacienteDAO($conexion);
         $pacienteService = new PacienteService($pacienteDAO);
         $this->pacienteController = new PacienteController($pacienteService);
+
+        // Configurar módulo de Recetas
+        $recetaDAO = new RecetaDAO($conexion);
+        $recetaService = new RecetaService($recetaDAO);
+        $this->recetaController = new RecetaController($recetaService);
     }
 
     // =====================================
@@ -86,5 +95,33 @@ class FarmaciaFacade {
 
     public function filtrarPacientes($filtros) {
         return $this->pacienteController->filtrar($filtros);
+    }
+
+    // =====================================
+    // MÉTODOS DEL MÓDULO DE RECETAS
+    // =====================================
+
+    public function registrarReceta($datos) {
+        return $this->recetaController->registrar($datos);
+    }
+
+    public function consultarReceta($id) {
+        return $this->recetaController->consultar($id);
+    }
+
+    public function listarRecetas() {
+        return $this->recetaController->listar();
+    }
+
+    public function actualizarReceta($datos) {
+        return $this->recetaController->actualizar($datos);
+    }
+
+    public function eliminarReceta($id) {
+        return $this->recetaController->eliminar($id);
+    }
+
+    public function filtrarRecetas($filtros) {
+        return $this->recetaController->filtrar($filtros);
     }
 }
