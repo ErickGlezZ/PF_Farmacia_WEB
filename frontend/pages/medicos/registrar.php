@@ -57,12 +57,12 @@ unset($_SESSION['datos_medico']);
                     <span>Médicos</span>
                 </a>
 
-                <a href="../pacientes/listar.php" class="menu-enlace">
+                <a href="../pacientes/consultar.php" class="menu-enlace">
                     <i class="bi bi-people"></i>
                     <span>Pacientes</span>
                 </a>
 
-                <a href="../recetas/listar.php" class="menu-enlace">
+                <a href="../recetas/consultar.php" class="menu-enlace">
                     <i class="bi bi-file-medical"></i>
                     <span>Recetas</span>
                 </a>

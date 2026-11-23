@@ -89,8 +89,8 @@ $experiencia = $datosMedico['Años_Experiencia'] ?? $medico->getAñosExperiencia
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../../css/dashboard.css">
-    <link rel="stylesheet" href="../../css/medicos.css">
-    <link rel="stylesheet" href="../../css/registrar_medico.css">
+    <link rel="stylesheet" href="../../css/listados.css">
+    <link rel="stylesheet" href="../../css/registrar.css">
 </head>
 
 <body>
@@ -119,12 +119,12 @@ $experiencia = $datosMedico['Años_Experiencia'] ?? $medico->getAñosExperiencia
                     <span>Médicos</span>
                 </a>
 
-                <a href="../pacientes/listar.php" class="menu-enlace">
+                <a href="../pacientes/consultar.php" class="menu-enlace">
                     <i class="bi bi-people"></i>
                     <span>Pacientes</span>
                 </a>
 
-                <a href="../recetas/listar.php" class="menu-enlace">
+                <a href="../recetas/consultar.php" class="menu-enlace">
                     <i class="bi bi-file-medical"></i>
                     <span>Recetas</span>
                 </a>

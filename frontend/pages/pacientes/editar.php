@@ -97,7 +97,7 @@ $codigoPostal = $datosPaciente['Codigo_Postal'] ?? $paciente->getCodigoPostal();
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../../css/dashboard.css">
     <link rel="stylesheet" href="../../css/listados.css">
-    <link rel="stylesheet" href="../../css/registrar_paciente.css">
+    <link rel="stylesheet" href="../../css/registrar.css">
 </head>
 
 <body>
@@ -131,7 +131,7 @@ $codigoPostal = $datosPaciente['Codigo_Postal'] ?? $paciente->getCodigoPostal();
                     <span>Pacientes</span>
                 </a>
 
-                <a href="../recetas/listar.php" class="menu-enlace">
+                <a href="../recetas/consultar.php" class="menu-enlace">
                     <i class="bi bi-file-medical"></i>
                     <span>Recetas</span>
                 </a>
