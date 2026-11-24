@@ -3,21 +3,28 @@
 namespace App\facade;
 
 use App\Config\Conexion;
+
 use App\DAO\MedicoDAO;
 use App\DAO\PacienteDAO;
 use App\DAO\RecetaDAO;
+use App\DAO\UsuarioDAO;
+
 use App\Services\MedicoService;
 use App\Services\PacienteService;
 use App\Services\RecetaService;
+use App\Services\UsuarioService;
+
 use App\Controllers\MedicoController;
 use App\Controllers\PacienteController;
 use App\Controllers\RecetaController;
+use App\Controllers\UsuarioController;
 
 class FarmaciaFacade {
 
     private $medicoController;
     private $pacienteController;
     private $recetaController;
+    private $usuarioController;
 
     public function __construct() {
 
@@ -39,6 +46,11 @@ class FarmaciaFacade {
         $recetaDAO = new RecetaDAO($conexion);
         $recetaService = new RecetaService($recetaDAO);
         $this->recetaController = new RecetaController($recetaService);
+
+        // Configurar módulo de Usuarios
+        $usuarioDAO = new UsuarioDAO($conexion);
+        $usuarioService = new UsuarioService($usuarioDAO);
+        $this->usuarioController = new UsuarioController($usuarioService);
     }
 
     // =====================================
@@ -123,5 +135,48 @@ class FarmaciaFacade {
 
     public function filtrarRecetas($filtros) {
         return $this->recetaController->filtrar($filtros);
+    }
+
+    // =====================================
+    // MÉTODOS DEL MÓDULO DE USUARIOS
+    // =====================================
+
+    public function registrarEmpleado($nombre, $usuario, $password) {
+        return $this->usuarioController->registrar(
+            $nombre,
+            $usuario,
+            $password
+        );
+    }
+
+    public function consultarUsuario($id) {
+        return $this->usuarioController->consultar($id);
+    }
+
+    public function listarUsuarios() {
+        return $this->usuarioController->listar();
+    }
+
+    public function actualizarEmpleado($id, $nombre, $usuario, $password = null) {
+        return $this->usuarioController->actualizar(
+            $id,
+            $nombre,
+            $usuario,
+            $password
+        );
+    }
+
+    public function cambiarEstadoUsuario($id, $estado) {
+        return $this->usuarioController->cambiarEstado(
+            $id,
+            $estado
+        );
+    }
+
+    public function autenticarUsuario($usuario, $password) {
+        return $this->usuarioController->autenticar(
+            $usuario,
+            $password
+        );
     }
 }
