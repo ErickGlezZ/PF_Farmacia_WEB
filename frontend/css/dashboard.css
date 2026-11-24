@@ -1,14 +1,61 @@
 
+/* =========================================
+   FARMACIAS R-X
+   DASHBOARD PRINCIPAL
+========================================= */
+
+:root {
+    --color-primary: #18364A;
+    --color-primary-dark: #102A3A;
+    --color-primary-light: #284D63;
+
+    --color-green: #299B79;
+    --color-green-dark: #207D62;
+    --color-green-light: #E5F1EC;
+
+    --color-background: #F2F6F4;
+    --color-white: #FFFFFF;
+
+    --color-text: #243B49;
+    --color-text-secondary: #72828B;
+
+    --color-border: #E5EBE8;
+
+    --color-blue-soft: #EAF1F7;
+    --color-purple-soft: #F1EDFA;
+    --color-orange-soft: #FFF2E7;
+
+    --shadow-card: 0 5px 20px rgba(24, 54, 74, 0.045);
+    --shadow-hover: 0 12px 28px rgba(24, 54, 74, 0.09);
+
+    --radius-card: 16px;
+}
+
+
+/* =========================================
+   CONFIGURACIÓN GENERAL
+========================================= */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
 body {
-    background: #F1F5F9;
+    font-family: 'Inter', sans-serif;
+    background: var(--color-background);
+    color: var(--color-text);
     min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font-family: inherit;
 }
 
 .contenedor {
@@ -16,287 +63,1266 @@ body {
     min-height: 100vh;
 }
 
-/* MENÚ LATERAL */
+
+/* =========================================
+   MENÚ LATERAL
+========================================= */
 
 .sidebar {
-    width: 255px;
-    min-width: 255px;
-    background: #1E293B;
-    color: white;
+    width: 260px;
+    min-width: 260px;
+    min-height: 100vh;
+
     display: flex;
     flex-direction: column;
-    padding: 25px 18px;
+
+    background: var(--color-primary-dark);
+    color: var(--color-white);
+
+    padding: 25px 17px 18px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    z-index: 100;
 }
+
+
+/* LOGO */
 
 .sidebar-logo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 0 40px;
-    font-size: 20px;
-    font-weight: bold;
+    gap: 12px;
+
+    padding: 3px 10px 29px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
 }
 
-.sidebar-logo i {
-    font-size: 27px;
-    color: #93C5FD;
+.logo-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: var(--color-green);
+    color: white;
+
+    font-size: 23px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.logo-text strong {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+}
+
+.logo-text small {
+    font-size: 10px;
+    color: #AABAC3;
+}
+
+
+/* OPCIONES DEL MENÚ */
+
+.sidebar-menu {
+    flex: 1;
+    padding-top: 30px;
 }
 
 .menu-titulo {
-    color: #94A3B8;
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: 1px;
+    color: #8FA5B2;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
     padding: 0 12px;
-    margin-bottom: 12px;
+    margin-bottom: 13px;
 }
 
-.sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.menu-titulo-secundario {
+    margin-top: 34px;
 }
 
 .menu-enlace {
+    min-height: 47px;
+
     display: flex;
     align-items: center;
     gap: 13px;
-    padding: 13px;
-    border-radius: 7px;
-    color: #CBD5E1;
-    text-decoration: none;
-    font-size: 14px;
-    transition: 0.3s;
+
+    padding: 0 13px;
+    margin-bottom: 7px;
+
+    border-radius: 10px;
+
+    color: #B9C8D0;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    transition: all 0.2s ease;
 }
 
 .menu-enlace i {
-    font-size: 19px;
+    font-size: 17px;
 }
 
-.menu-enlace:hover,
-.menu-enlace.activo {
-    background: #334155;
+.menu-enlace:hover {
+    background: rgba(255, 255, 255, 0.07);
     color: white;
 }
 
 .menu-enlace.activo {
-    border-left: 3px solid #60A5FA;
+    background: var(--color-green);
+    color: white;
+
+    box-shadow: 0 5px 14px rgba(41, 155, 121, 0.20);
 }
+
+.menu-proximamente {
+    opacity: 0.65;
+    cursor: default;
+    flex-wrap: wrap;
+}
+
+.menu-proximamente small {
+    margin-left: auto;
+    font-size: 9px;
+    color: #AFC5CE;
+}
+
+
+/* INFORMACIÓN DEL USUARIO */
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 17px 8px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.user-avatar,
+.usuario-avatar {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(41, 155, 121, 0.18);
+    color: #77D6B4;
+
+    font-size: 18px;
+}
+
+.user-details {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-details strong {
+    font-size: 11px;
+    font-weight: 700;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    max-width: 140px;
+}
+
+.user-details span {
+    color: #AABAC3;
+    font-size: 10px;
+}
+
+.user-status {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #4AD6A1;
+    margin-left: auto;
+
+    box-shadow: 0 0 0 4px rgba(74, 214, 161, 0.10);
+}
+
+
+/* CERRAR SESIÓN */
 
 .sidebar-footer {
-    margin-top: auto;
-    padding-top: 25px;
-    border-top: 1px solid #334155;
+    padding-top: 17px;
+}
+
+.sidebar-footer form {
+    width: 100%;
+}
+
+.btn-logout {
+    width: 100%;
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 0 13px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+    color: #B9C8D0;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-align: left;
+
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: rgba(220, 80, 80, 0.13);
+    color: #FF9D9D;
+}
+
+.btn-logout i {
+    font-size: 17px;
 }
 
 
-/* CONTENIDO PRINCIPAL */
+/* =========================================
+   CONTENIDO PRINCIPAL
+========================================= */
 
 .contenido {
-    flex: 1;
-    min-width: 0;
-    padding: 35px;
+    width: calc(100% - 260px);
+    min-height: 100vh;
+
+    margin-left: 260px;
+
+    padding: 32px 38px 20px;
 }
+
+
+/* =========================================
+   ENCABEZADO
+========================================= */
 
 .encabezado {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-bottom: 40px;
+    align-items: center;
+
+    gap: 20px;
+
+    margin-bottom: 28px;
+}
+
+.breadcrumb-text {
+    color: var(--color-green);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
 }
 
 .encabezado h1 {
-    color: #1E293B;
     font-size: 27px;
-    font-weight: bold;
-    margin-bottom: 7px;
+    font-weight: 800;
+
+    letter-spacing: -0.9px;
+
+    margin: 7px 0 5px;
 }
 
 .encabezado p {
-    color: #64748B;
-    font-size: 14px;
+    color: var(--color-text-secondary);
+
+    font-size: 12px;
     margin: 0;
+}
+
+.encabezado-derecha {
+    display: flex;
+    align-items: center;
+    gap: 23px;
+}
+
+.fecha-actual {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 13px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+
+    background: white;
+
+    color: var(--color-text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.fecha-actual i {
+    color: var(--color-green);
+    font-size: 15px;
 }
 
 .usuario-info {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #334155;
-    font-size: 14px;
-    font-weight: 600;
 }
 
-.usuario-info i {
-    font-size: 27px;
+.usuario-avatar {
+    background: var(--color-green-light);
+    color: var(--color-green);
 }
 
-
-/* SECCIONES */
-
-.seccion-estadisticas,
-.seccion-accesos {
-    margin-bottom: 40px;
-}
-
-.seccion-estadisticas h2,
-.seccion-accesos h2 {
-    color: #334155;
-    font-size: 19px;
-    font-weight: bold;
-    margin-bottom: 22px;
-}
-
-
-/* TARJETAS DE ESTADÍSTICAS */
-
-.tarjeta-estadistica {
+.usuario-info > div:last-child {
     display: flex;
-    align-items: center;
-    gap: 20px;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
-    height: 100%;
-    transition: 0.3s;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.tarjeta-estadistica:hover,
-.tarjeta-acceso:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
-}
-
-.tarjeta-icono {
-    min-width: 58px;
-    width: 58px;
-    height: 58px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-}
-
-.icono-medicos {
-    background: #DBEAFE;
-    color: #2563EB;
-}
-
-.icono-pacientes {
-    background: #D1FAE5;
-    color: #059669;
-}
-
-.icono-recetas {
-    background: #F3E8FF;
-    color: #9333EA;
-}
-
-.tarjeta-estadistica p {
-    color: #64748B;
-    font-size: 13px;
-    margin-bottom: 5px;
-}
-
-.tarjeta-estadistica h3 {
-    color: #1E293B;
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-
-.tarjeta-estadistica span {
-    color: #94A3B8;
+.usuario-info strong {
     font-size: 11px;
+    font-weight: 700;
+}
+
+.usuario-info span {
+    color: var(--color-text-secondary);
+    font-size: 10px;
 }
 
 
-/* ACCESOS RÁPIDOS */
+/* =========================================
+   BIENVENIDA
+========================================= */
 
-.tarjeta-acceso {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
-    height: 100%;
-    transition: 0.3s;
+.bienvenida {
+    min-height: 225px;
+
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 32px 42px;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(110deg, #102A3A 0%, #183F50 65%, #205B58 100%);
+
+    color: white;
+
+    margin-bottom: 37px;
 }
 
-.tarjeta-acceso > i {
-    color: #334E68;
-    font-size: 28px;
+.bienvenida-contenido {
+    position: relative;
+    z-index: 2;
+
+    max-width: 590px;
 }
 
-.tarjeta-acceso h3 {
-    color: #1E293B;
-    font-size: 17px;
-    font-weight: bold;
-    margin-top: 18px;
+.bienvenida-etiqueta {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #A8E2CF;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    margin-bottom: 15px;
+}
+
+.bienvenida h2 {
+    font-size: 27px;
+    font-weight: 800;
+
+    letter-spacing: -0.7px;
+
     margin-bottom: 10px;
 }
 
-.tarjeta-acceso p {
-    color: #64748B;
+.bienvenida p {
+    max-width: 510px;
+
+    color: #C1D0D5;
+
+    font-size: 12px;
+    line-height: 1.8;
+
+    margin-bottom: 19px;
+}
+
+.btn-bienvenida {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 11px 16px;
+
+    background: var(--color-green);
+    color: white;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    transition: all 0.2s ease;
+}
+
+.btn-bienvenida:hover {
+    background: #36B28D;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.bienvenida-ilustracion {
+    width: 220px;
+    height: 180px;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+.ilustracion-circulo {
+    position: absolute;
+
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.circulo-uno {
+    width: 175px;
+    height: 175px;
+}
+
+.circulo-dos {
+    width: 125px;
+    height: 125px;
+}
+
+.ilustracion-icono {
+    width: 94px;
+    height: 94px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 28px;
+
+    background: rgba(41, 155, 121, 0.22);
+    border: 1px solid rgba(151, 225, 202, 0.24);
+
+    color: #A2E8CF;
+
+    font-size: 52px;
+    transform: rotate(-8deg);
+}
+
+.icono-flotante {
+    position: absolute;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: white;
+    color: var(--color-green);
+
+    font-size: 17px;
+}
+
+.icono-flotante-uno {
+    top: 12px;
+    right: 12px;
+}
+
+.icono-flotante-dos {
+    bottom: 8px;
+    left: 9px;
+}
+
+
+/* =========================================
+   ENCABEZADOS DE SECCIONES
+========================================= */
+
+.seccion-estadisticas,
+.seccion-relaciones,
+.seccion-accesos,
+.seccion-actividad {
+    margin-bottom: 39px;
+}
+
+.seccion-encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+.subtitulo-seccion {
+    color: var(--color-green);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+}
+
+.seccion-encabezado h2 {
+    font-size: 18px;
+    font-weight: 800;
+
+    letter-spacing: -0.4px;
+
+    margin: 5px 0;
+}
+
+.seccion-encabezado p {
+    color: var(--color-text-secondary);
+
+    font-size: 11px;
+    margin: 0;
+}
+
+.estado-indicadores,
+.etiqueta-relaciones {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 8px 11px;
+
+    border-radius: 8px;
+
+    background: #FFF5E9;
+    color: #A87535;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.etiqueta-relaciones {
+    background: var(--color-green-light);
+    color: var(--color-green-dark);
+}
+
+
+/* =========================================
+   TARJETAS DE ESTADÍSTICAS
+========================================= */
+
+.estadisticas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 19px;
+}
+
+.tarjeta-estadistica {
+    min-height: 190px;
+
+    padding: 21px;
+
+    background: white;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+
+    box-shadow: var(--shadow-card);
+
+    transition: all 0.25s ease;
+}
+
+.tarjeta-estadistica:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.estadistica-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tarjeta-icono {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-size: 20px;
+}
+
+.icono-medicos {
+    background: var(--color-blue-soft);
+    color: #527FA5;
+}
+
+.icono-pacientes {
+    background: var(--color-green-light);
+    color: var(--color-green);
+}
+
+.icono-recetas {
+    background: var(--color-purple-soft);
+    color: #8270B9;
+}
+
+.estadistica-etiqueta {
+    color: #A0ADB3;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.estadistica-datos {
+    margin-top: 17px;
+}
+
+.estadistica-datos h3 {
+    font-size: 30px;
+    font-weight: 800;
+
+    letter-spacing: -1px;
+
+    margin-bottom: 3px;
+}
+
+.estadistica-datos p {
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+    margin: 0;
+}
+
+.estadistica-pie {
+    display: flex;
+    justify-content: flex-end;
+
+    padding-top: 12px;
+    margin-top: 13px;
+
+    border-top: 1px solid #F0F3F2;
+}
+
+.estadistica-pie a {
+    color: var(--color-green-dark);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    transition: color 0.2s ease;
+}
+
+.estadistica-pie a:hover {
+    color: var(--color-primary);
+}
+
+.estadistica-pie i {
+    margin-left: 5px;
+}
+
+
+/* =========================================
+   RELACIONES ENTRE MÓDULOS
+========================================= */
+
+.relaciones-contenedor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 85px minmax(0, 1fr) 85px minmax(0, 1fr);
+
+    align-items: center;
+    gap: 8px;
+}
+
+.relacion-card {
+    min-height: 250px;
+
+    padding: 23px 17px;
+
+    background: white;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+
+    box-shadow: var(--shadow-card);
+
+    text-align: center;
+
+    transition: all 0.25s ease;
+}
+
+.relacion-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.relacion-icono {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    margin: 0 auto 14px;
+
+    font-size: 25px;
+}
+
+.relacion-medico {
+    background: var(--color-blue-soft);
+    color: #527FA5;
+}
+
+.relacion-paciente {
+    background: var(--color-green-light);
+    color: var(--color-green);
+}
+
+.relacion-receta {
+    background: var(--color-purple-soft);
+    color: #8270B9;
+}
+
+.relacion-card h3 {
+    font-size: 14px;
+    font-weight: 800;
+
+    margin-bottom: 8px;
+}
+
+.relacion-card p {
+    min-height: 42px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+    line-height: 1.7;
+
+    margin-bottom: 11px;
+}
+
+.relacion-tipo {
+    display: block;
+
+    color: #A0ADB3;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    margin-bottom: 15px;
+}
+
+.relacion-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--color-green-dark);
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.relacion-card a:hover {
+    color: var(--color-primary);
+}
+
+.relacion-conector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--color-green);
+    text-align: center;
+}
+
+.relacion-conector i {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--color-green-light);
+
+    font-size: 16px;
+}
+
+.relacion-conector span {
+    color: var(--color-text-secondary);
+
+    font-size: 8px;
+    line-height: 1.4;
+}
+
+.relaciones-nota {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 13px 15px;
+    margin-top: 15px;
+
+    background: #EDF4F1;
+
+    border: 1px solid #DDEBE4;
+    border-radius: 10px;
+
+    color: var(--color-green-dark);
+}
+
+.relaciones-nota i {
+    font-size: 15px;
+    margin-top: 1px;
+}
+
+.relaciones-nota p {
+    color: #557568;
+
+    font-size: 10px;
+    line-height: 1.6;
+
+    margin: 0;
+}
+
+
+/* =========================================
+   ACCESOS RÁPIDOS
+========================================= */
+
+.accesos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.tarjeta-acceso {
+    min-height: 115px;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 19px;
+
+    background: white;
+
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow-card);
+
+    transition: all 0.25s ease;
+}
+
+.tarjeta-acceso:hover {
+    border-color: #B7DCCF;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+.acceso-icono {
+    width: 43px;
+    height: 43px;
+
+    min-width: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-size: 19px;
+}
+
+.acceso-medico {
+    background: var(--color-blue-soft);
+    color: #527FA5;
+}
+
+.acceso-paciente {
+    background: var(--color-green-light);
+    color: var(--color-green);
+}
+
+.acceso-receta {
+    background: var(--color-purple-soft);
+    color: #8270B9;
+}
+
+.acceso-contenido {
+    flex: 1;
+    min-width: 0;
+}
+
+.acceso-contenido h3 {
+    font-size: 11px;
+    font-weight: 800;
+
+    margin-bottom: 5px;
+}
+
+.acceso-contenido p {
+    color: var(--color-text-secondary);
+
+    font-size: 9px;
+    line-height: 1.5;
+
+    margin: 0;
+}
+
+.acceso-flecha {
+    color: #9BAAB0;
+    font-size: 16px;
+
+    transition: all 0.2s ease;
+}
+
+.tarjeta-acceso:hover .acceso-flecha {
+    color: var(--color-green);
+    transform: translate(2px, -2px);
+}
+
+
+/* =========================================
+   ACTIVIDAD RECIENTE
+========================================= */
+
+.actividad-panel {
+    min-height: 145px;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    padding: 24px;
+
+    background: white;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+
+    box-shadow: var(--shadow-card);
+}
+
+.actividad-vacia-icono {
+    width: 55px;
+    height: 55px;
+
+    min-width: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background: var(--color-green-light);
+    color: var(--color-green);
+
+    font-size: 24px;
+}
+
+.actividad-vacia-texto {
+    flex: 1;
+}
+
+.actividad-vacia-texto h3 {
     font-size: 13px;
-    margin-bottom: 20px;
+    font-weight: 800;
+
+    margin-bottom: 7px;
 }
 
-.tarjeta-acceso a {
-    text-decoration: none;
-    color: #2563EB;
-    font-size: 13px;
-    font-weight: bold;
+.actividad-vacia-texto p {
+    max-width: 650px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+    line-height: 1.7;
+
+    margin: 0;
 }
 
-.tarjeta-acceso a:hover {
-    color: #1D4ED8;
+.actividad-etiqueta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    background: #F2F4F5;
+    color: #7C8A90;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    white-space: nowrap;
 }
 
 
-/* DISEÑO RESPONSIVO */
+/* =========================================
+   PIE DE PÁGINA
+========================================= */
 
-@media (max-width: 768px) {
+.dashboard-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    padding: 18px 0 5px;
+
+    border-top: 1px solid var(--color-border);
+
+    color: #91A0A5;
+    font-size: 9px;
+}
+
+.dashboard-footer i {
+    color: var(--color-green);
+    margin-left: 4px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1200px) {
+
+    .contenido {
+        padding: 28px 25px 20px;
+    }
+
+    .relaciones-contenedor {
+        grid-template-columns: minmax(0, 1fr) 55px minmax(0, 1fr) 55px minmax(0, 1fr);
+    }
+
+    .relacion-conector span {
+        font-size: 7px;
+    }
+
+    .tarjeta-acceso {
+        padding: 15px;
+    }
+
+}
+
+
+@media (max-width: 1000px) {
 
     .sidebar {
-        width: 75px;
-        min-width: 75px;
-        padding: 20px 10px;
-    }
-
-    .sidebar-logo span,
-    .menu-enlace span,
-    .menu-titulo {
-        display: none;
-    }
-
-    .sidebar-logo {
-        padding-bottom: 35px;
-    }
-
-    .sidebar-logo i {
-        font-size: 25px;
-    }
-
-    .menu-enlace {
-        justify-content: center;
-        padding: 13px 5px;
-    }
-
-    .menu-enlace i {
-        font-size: 21px;
+        width: 225px;
+        min-width: 225px;
     }
 
     .contenido {
-        padding: 22px 15px;
+        width: calc(100% - 225px);
+        margin-left: 225px;
+    }
+
+    .estadisticas-grid,
+    .accesos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .relaciones-contenedor {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .relacion-card {
+        min-height: auto;
+    }
+
+    .relacion-card p {
+        min-height: auto;
+    }
+
+    .relacion-conector {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .relacion-conector span {
+        font-size: 9px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .sidebar {
+        position: relative;
+
+        width: 100%;
+        min-width: 100%;
+        min-height: auto;
+
+        padding: 16px;
+    }
+
+    .contenedor {
+        display: block;
+    }
+
+    .sidebar-menu {
+        padding-top: 18px;
+    }
+
+    .sidebar-user {
+        margin-top: 15px;
+    }
+
+    .contenido {
+        width: 100%;
+        margin-left: 0;
+
+        padding: 25px 18px;
     }
 
     .encabezado {
         align-items: flex-start;
         flex-direction: column;
-        gap: 15px;
+    }
+
+    .encabezado-derecha {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .bienvenida {
+        min-height: auto;
+        padding: 27px 23px;
+    }
+
+    .bienvenida-ilustracion {
+        display: none;
+    }
+
+    .estadisticas-grid,
+    .accesos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .seccion-encabezado {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .actividad-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
+
+
+@media (max-width: 420px) {
+
+    .contenido {
+        padding: 22px 13px;
+    }
+
+    .bienvenida h2 {
+        font-size: 23px;
+    }
+
+    .bienvenida p {
+        font-size: 11px;
+    }
+
+    .encabezado h1 {
+        font-size: 23px;
+    }
+
+    .fecha-actual {
+        padding: 9px;
+        font-size: 9px;
     }
 
 }
