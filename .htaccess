@@ -1,0 +1,10 @@
+# Desactivar la exploración de directorios
+Options -Indexes
+
+# Evitar acceso directo a archivos y carpetas internas
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloquear completamente el acceso HTTP al backend
+    RewriteRule ^backend(?:/|$) - [F,L]
+</IfModule>
