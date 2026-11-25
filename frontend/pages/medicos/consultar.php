@@ -6,6 +6,16 @@ session_start();
 require_once __DIR__ . '/../../../backend/config/autoload.php';
 
 use App\facade\FarmaciaFacade;
+use App\Middleware\AuthMiddleware;
+
+// Proteger el dashboard
+AuthMiddleware::requireRole(
+    ['Administrador', 'Empleado'],
+    '../login.php'
+);
+
+// Identificar si el usuario es administrador
+$esAdministrador = ($_SESSION['rol'] ?? '') === 'Administrador';
 
 // Obtener los médicos de la base de datos
 try {
@@ -314,30 +324,35 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
 
+                                                    
+                                                    <!-- FORMULARIO ELIMINAR: SOLO ADMINISTRADOR -->
+                                                    <?php if ($esAdministrador): ?>
 
-                                                    <!-- FORMULARIO ELIMINAR -->
-                                                    <form
-                                                        action="../../scripts/procesar_bajas_medicos.php"
-                                                        method="POST"
-                                                        class="d-inline"
-                                                        onsubmit="return confirm('¿Estás seguro de eliminar este médico?');"
-                                                    >
-
-                                                        <input
-                                                            type="hidden"
-                                                            name="id_Medico"
-                                                            value="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                                        <form
+                                                            action="../../scripts/procesar_bajas_medicos.php"
+                                                            method="POST"
+                                                            class="d-inline"
+                                                            onsubmit="return confirm('¿Estás seguro de eliminar este médico?');"
                                                         >
 
-                                                        <button
-                                                            type="submit"
-                                                            class="btn btn-eliminar"
-                                                            title="Eliminar médico"
-                                                        >
-                                                            <i class="bi bi-trash3"></i>
-                                                        </button>
+                                                            <input
+                                                                type="hidden"
+                                                                name="id_Medico"
+                                                                value="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                                            >
 
-                                                    </form>
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-eliminar"
+                                                                title="Eliminar médico"
+                                                            >
+                                                                <i class="bi bi-trash3"></i>
+                                                            </button>
+
+                                                        </form>
+
+                                                    <?php endif; ?>
+
 
                                                 </div>
 

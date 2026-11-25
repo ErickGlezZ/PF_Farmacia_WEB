@@ -2,6 +2,16 @@
 
 session_start();
 
+use App\Middleware\AuthMiddleware;
+
+require_once __DIR__ . '/../../../backend/config/Autoload.php';
+
+// Proteger el dashboard
+AuthMiddleware::requireRole(
+    ['Administrador', 'Empleado'],
+    '../login.php'
+);
+
 // Recuperar los datos anteriores, si existen
 $datosMedico = $_SESSION['datos_medico'] ?? [];
 

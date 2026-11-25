@@ -6,6 +6,13 @@ session_start();
 require_once __DIR__ . '/../../../backend/config/autoload.php';
 
 use App\facade\FarmaciaFacade;
+use App\Middleware\AuthMiddleware;
+
+// Proteger el dashboard
+AuthMiddleware::requireRole(
+    ['Administrador', 'Empleado'],
+    '../login.php'
+);
 
 // Validar el ID recibido
 if (
