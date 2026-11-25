@@ -137,15 +137,21 @@ class FarmaciaFacade {
         return $this->recetaController->filtrar($filtros);
     }
 
+    public function contarRecetasPaciente($idPaciente) {
+        return $this->recetaController->contarPorPaciente($idPaciente);
+    }
+
+    
     // =====================================
     // MÉTODOS DEL MÓDULO DE USUARIOS
     // =====================================
 
-    public function registrarEmpleado($nombre, $usuario, $password) {
+    public function registrarUsuario($nombre, $usuario, $password, $rol) {
         return $this->usuarioController->registrar(
             $nombre,
             $usuario,
-            $password
+            $password,
+            $rol
         );
     }
 
