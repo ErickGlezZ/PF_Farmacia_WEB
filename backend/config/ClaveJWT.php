@@ -1,0 +1,3 @@
+<?php
+
+return '361afa52410cfa0222b8467cb019887f3de118eed63f41a29459dbac64203ecd';
