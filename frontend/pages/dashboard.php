@@ -10,6 +10,11 @@ AuthMiddleware::requireRole(
     'login.php'
 );
 
+// Generar token CSRF para el cierre de sesión
+if (empty($_SESSION['csrf_logout'])) {
+    $_SESSION['csrf_logout'] = bin2hex(random_bytes(32));
+}
+
 // Obtener información del usuario autenticado
 $nombreUsuario = htmlspecialchars(
     $_SESSION['nombre_usuario'] ?? 'Usuario',
@@ -136,6 +141,16 @@ $fechaActual = date('d/m/Y');
             <div class="sidebar-footer">
 
                 <form action="../scripts/procesar_logout.php" method="POST">
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?= htmlspecialchars(
+                            $_SESSION['csrf_logout'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>"
+                    >
 
                     <button type="submit" class="btn-logout">
                         <i class="bi bi-box-arrow-left"></i>

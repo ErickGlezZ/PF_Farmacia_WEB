@@ -4,21 +4,27 @@ namespace App\Config;
 
 class Sesion
 {
-    // Tiempo máximo de inactividad: 30min.
-    private const TIEMPO_INACTIVIDAD = 1800;
-
+    /**
+     * Inicia la sesión PHP para manejar datos temporales
+     * como los tokens CSRF y mensajes informativos.
+     */
     public static function iniciar(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
 
+            // Evitar identificadores de sesión proporcionados por el usuario.
             ini_set('session.use_strict_mode', '1');
+
+            // Permitir únicamente el uso de cookies para la sesión.
             ini_set('session.use_only_cookies', '1');
 
+            // Detectar si la conexión utiliza HTTPS.
             $https = (
                 isset($_SERVER['HTTPS']) &&
                 $_SERVER['HTTPS'] !== 'off'
             );
 
+            // Configurar la cookie de sesión.
             session_set_cookie_params([
                 'lifetime' => 0,
                 'path' => '/',
@@ -28,46 +34,8 @@ class Sesion
                 'samesite' => 'Lax'
             ]);
 
+            // Iniciar la sesión.
             session_start();
-        }
-
-        // Comprobar el tiempo de inactividad
-        if (isset($_SESSION['id_usuario'])) {
-
-            $ultimaActividad = $_SESSION['ultima_actividad'] ?? time();
-
-            if ((time() - $ultimaActividad) >= self::TIEMPO_INACTIVIDAD) {
-
-                // Eliminar los datos de sesión.
-                $_SESSION = [];
-
-                // Eliminar la cookie de sesión.
-                if (ini_get('session.use_cookies')) {
-
-                    $parametros = session_get_cookie_params();
-
-                    setcookie(
-                        session_name(),
-                        '',
-                        [
-                            'expires' => time() - 42000,
-                            'path' => $parametros['path'],
-                            'domain' => $parametros['domain'],
-                            'secure' => $parametros['secure'],
-                            'httponly' => $parametros['httponly'],
-                            'samesite' => $parametros['samesite']
-                        ]
-                    );
-                }
-
-                // Destruir la sesión.
-                session_destroy();
-
-                return;
-            }
-
-            // Actualizar la última actividad.
-            $_SESSION['ultima_actividad'] = time();
         }
     }
 }

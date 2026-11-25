@@ -8,16 +8,19 @@ use App\DAO\MedicoDAO;
 use App\DAO\PacienteDAO;
 use App\DAO\RecetaDAO;
 use App\DAO\UsuarioDAO;
+use App\DAO\RecuperacionPasswordDAO;
 
 use App\Services\MedicoService;
 use App\Services\PacienteService;
 use App\Services\RecetaService;
 use App\Services\UsuarioService;
+use App\Services\RecuperacionPasswordService;
 
 use App\Controllers\MedicoController;
 use App\Controllers\PacienteController;
 use App\Controllers\RecetaController;
 use App\Controllers\UsuarioController;
+use App\Controllers\RecuperacionPasswordController;
 
 class FarmaciaFacade {
 
@@ -25,6 +28,7 @@ class FarmaciaFacade {
     private $pacienteController;
     private $recetaController;
     private $usuarioController;
+    private $recuperacionPasswordController;
 
     public function __construct() {
 
@@ -51,6 +55,17 @@ class FarmaciaFacade {
         $usuarioDAO = new UsuarioDAO($conexion);
         $usuarioService = new UsuarioService($usuarioDAO);
         $this->usuarioController = new UsuarioController($usuarioService);
+
+        // Configurar módulo de recuperación de contraseñas
+        $recuperacionDAO = new RecuperacionPasswordDAO($conexion);
+
+        $recuperacionService = new RecuperacionPasswordService(
+            $usuarioDAO,
+            $recuperacionDAO
+        );
+
+        $this->recuperacionPasswordController =
+            new RecuperacionPasswordController($recuperacionService);
     }
 
     // =====================================
@@ -185,4 +200,27 @@ class FarmaciaFacade {
             $password
         );
     }
+
+    
+    // =====================================
+    // MÉTODOS DEL MÓDULO DE RECUPERACIÓN
+    // =====================================
+
+    public function solicitarRecuperacionPassword($usuario) {
+        return $this->recuperacionPasswordController->solicitar($usuario);
+    }
+
+    public function validarTokenRecuperacion($token) {
+        return $this->recuperacionPasswordController->validarToken($token);
+    }
+
+    public function restablecerPassword($token, $password, $confirmacion) {
+        return $this->recuperacionPasswordController->restablecer(
+            $token,
+            $password,
+            $confirmacion
+        );
+    }
+
+    
 }

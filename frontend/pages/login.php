@@ -52,6 +52,8 @@ if (empty($_SESSION['csrf_login'])) {
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <body>
@@ -230,6 +232,19 @@ if (empty($_SESSION['csrf_login'])) {
                         </div>
 
                     </div>
+
+                    
+                    <!-- CAPTCHA Cloudflare Turnstile -->
+                    <div class="d-flex justify-content-center my-4">
+
+                        <div
+                            class="cf-turnstile"
+                            data-sitekey="0x4AAAAAAGSxjgo_3E3esrPa"
+                            data-theme="light"
+                        ></div>
+
+                    </div>
+                    
 
 
                     <div class="forgot-password">
