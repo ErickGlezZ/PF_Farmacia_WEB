@@ -14,24 +14,35 @@ class UsuarioService
         $this->usuarioDAO = $usuarioDAO;
     }
 
-    // Registrar un nuevo empleado
-    public function registrarEmpleado(
+    
+    // Registrar un nuevo usuario
+    public function registrarUsuario(
         string $nombre,
         string $usuario,
-        string $password
+        string $password,
+        string $rol
     ): bool {
 
         $nombre = trim($nombre);
         $usuario = trim($usuario);
+        $rol = trim($rol);
 
         // Validar los campos obligatorios
         if (
             empty($nombre) ||
             empty($usuario) ||
-            empty($password)
+            empty($password) ||
+            empty($rol)
         ) {
             throw new \InvalidArgumentException(
                 "Todos los campos son obligatorios."
+            );
+        }
+
+        // Validar el rol seleccionado
+        if (!in_array($rol, ['Administrador', 'Empleado'], true)) {
+            throw new \InvalidArgumentException(
+                "El tipo de cuenta seleccionado no es válido."
             );
         }
 
@@ -84,12 +95,13 @@ class UsuarioService
             $nombre,
             $usuario,
             $passwordHash,
-            'Empleado',
+            $rol,
             1
         );
 
         return $this->usuarioDAO->guardar($nuevoUsuario);
     }
+
 
     // Buscar un usuario por su ID
     public function obtenerUsuario(int $id): ?Usuario

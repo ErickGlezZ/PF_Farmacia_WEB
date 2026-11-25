@@ -13,17 +13,19 @@ class UsuarioController
         $this->usuarioService = $usuarioService;
     }
 
-    // Registrar un empleado
+    // Registrar un nuevo usuario
     public function registrar(
         string $nombre,
         string $usuario,
-        string $password
+        string $password,
+        string $rol
     ): bool {
 
-        return $this->usuarioService->registrarEmpleado(
+        return $this->usuarioService->registrarUsuario(
             $nombre,
             $usuario,
-            $password
+            $password,
+            $rol
         );
     }
 
