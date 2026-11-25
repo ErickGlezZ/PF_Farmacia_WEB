@@ -6,7 +6,12 @@ session_start();
 require_once __DIR__ . '/../../backend/config/Autoload.php';
 
 use App\facade\FarmaciaFacade;
+use App\Middleware\AuthMiddleware;
 
+AuthMiddleware::requireRole(
+    ['Administrador'],
+    '../pages/login.php'
+);
 // Verificar que la petición sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../pages/pacientes/consultar.php");

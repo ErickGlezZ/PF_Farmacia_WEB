@@ -6,7 +6,16 @@ session_start();
 require_once __DIR__ . '/../../../backend/config/autoload.php';
 
 use App\facade\FarmaciaFacade;
+use App\Middleware\AuthMiddleware;
 
+// Proteger el dashboard
+AuthMiddleware::requireRole(
+    ['Administrador', 'Empleado'],
+    '../login.php'
+);
+
+// Identificar si el usuario es administrador
+$esAdministrador = ($_SESSION['rol'] ?? '') === 'Administrador';
 
 try {
 
@@ -229,6 +238,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                     <th>SSN</th>
                                     <th>Edad</th>
                                     <th>Médico de cabecera</th>
+                                    <th class="text-center">Recetas</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
@@ -242,6 +252,10 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                         <?php
                                             // Obtener los datos del paciente
                                             $id = $paciente->getIdPaciente();
+
+                                            // Obtener cantidad de recetas relacionadas con el paciente
+                                            $totalRecetas = $farmacia->contarRecetasPaciente($id);
+
                                             $ssn = $paciente->getSSN();
                                             $nombre = $paciente->getNombre();
                                             $primerAp = $paciente->getPrimerApe();
@@ -305,6 +319,12 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                             <td>
                                                 <?= htmlspecialchars((string)$medicoTexto, ENT_QUOTES, 'UTF-8') ?>
                                             </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-primary">
+                                                    <?= $totalRecetas ?>
+                                                    <?= $totalRecetas === 1 ? 'receta' : 'recetas' ?>
+                                                </span>
+                                            </td>
 
                                             <td>
 
@@ -343,29 +363,36 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                     </a>
 
 
-                                                    <!-- FORMULARIO ELIMINAR -->
-                                                    <form
-                                                        action="../../scripts/procesar_bajas_pacientes.php"
-                                                        method="POST"
-                                                        class="d-inline"
-                                                        onsubmit="return confirm('¿Estás seguro de eliminar este paciente? También podrían eliminarse sus recetas asociadas. ¿Deseas continuar?');"
-                                                    >
+                                                    <!-- FORMULARIO ELIMINAR: SOLO ADMINISTRADOR -->
+                                                    <?php if ($esAdministrador): ?>
 
-                                                        <input
-                                                            type="hidden"
-                                                            name="id_Paciente"
-                                                            value="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                                        <form
+                                                            action="../../scripts/procesar_bajas_pacientes.php"
+                                                            method="POST"
+                                                            class="d-inline"
+                                                            onsubmit="return confirmarEliminacion(
+                                                                <?= $totalRecetas ?>,
+                                                                '<?= htmlspecialchars($nombre . ' ' . $primerAp, ENT_QUOTES, 'UTF-8') ?>'
+                                                            );"
                                                         >
 
-                                                        <button
-                                                            type="submit"
-                                                            class="btn btn-eliminar"
-                                                            title="Eliminar paciente"
-                                                        >
-                                                            <i class="bi bi-trash3"></i>
-                                                        </button>
+                                                            <input
+                                                                type="hidden"
+                                                                name="id_Paciente"
+                                                                value="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                                            >
 
-                                                    </form>
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-eliminar"
+                                                                title="Eliminar paciente"
+                                                            >
+                                                                <i class="bi bi-trash3"></i>
+                                                            </button>
+
+                                                        </form>
+
+                                                    <?php endif; ?>
 
                                                 </div>
 
@@ -378,7 +405,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                 <?php else: ?>
 
                                     <tr>
-                                        <td colspan="6" class="text-center py-4">
+                                        <td colspan="7" class="text-center py-4">
                                             No hay pacientes registrados.
                                         </td>
                                     </tr>
@@ -594,6 +621,28 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
             document.getElementById('detalleCodigoPostal').textContent = codigoPostal;
 
         });
+
+        // Confirmar eliminación de paciente
+        function confirmarEliminacion(totalRecetas, nombrePaciente) {
+
+            let mensaje = '';
+
+            if (totalRecetas > 0) {
+
+                mensaje = `El paciente ${nombrePaciente} tiene ${totalRecetas} ${
+                    totalRecetas === 1 ? 'receta asociada' : 'recetas asociadas'
+                }.\n\nSi continúas, también se eliminarán ${
+                    totalRecetas === 1 ? 'su receta' : 'sus recetas'
+                }.\n\n¿Deseas continuar?`;
+
+            } else {
+
+                mensaje = `¿Estás seguro de que deseas eliminar al paciente ${nombrePaciente}?`;
+
+            }
+
+            return confirm(mensaje);
+        }
 
     </script>
 

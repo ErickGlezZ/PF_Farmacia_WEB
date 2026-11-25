@@ -5,6 +5,13 @@ session_start();
 require_once dirname(__DIR__, 3) . '/backend/config/Autoload.php';
 
 use App\facade\FarmaciaFacade;
+use App\Middleware\AuthMiddleware;
+
+// Proteger el dashboard
+AuthMiddleware::requireRole(
+    ['Administrador', 'Empleado'],
+    '../login.php'
+);
 
 // Recuperar datos anteriores, si existen
 $datosPaciente = $_SESSION['datos_paciente'] ?? [];
