@@ -7,6 +7,16 @@ session_start();
 require_once __DIR__ . '/../../../backend/config/autoload.php';
 
 use App\facade\FarmaciaFacade;
+use App\Middleware\AuthMiddleware;
+
+// Proteger el dashboard
+AuthMiddleware::requireRole(
+    ['Administrador', 'Empleado'],
+    '../login.php'
+);
+
+// Identificar si el usuario es administrador
+$esAdministrador = ($_SESSION['rol'] ?? '') === 'Administrador';
 
 try {
 
@@ -357,10 +367,14 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                     >
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
+        
+                                                    
 
 
-                                                    <!-- FORMULARIO ELIMINAR -->
-                                                    <form
+                                                    <!-- FORMULARIO ELIMINAR: SOLO ADMINISTRADOR -->
+                                                    <?php if ($esAdministrador): ?>
+
+                                                        <form
                                                         action="../../scripts/procesar_bajas_recetas.php"
                                                         method="POST"
                                                         class="d-inline"
@@ -381,7 +395,9 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                             <i class="bi bi-trash3"></i>
                                                         </button>
 
-                                                    </form>
+                                                        </form>
+
+                                                    <?php endif; ?>
 
                                                 </div>
 

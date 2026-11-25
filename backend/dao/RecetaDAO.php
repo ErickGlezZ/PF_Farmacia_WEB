@@ -162,6 +162,22 @@ class RecetaDAO implements RecetaRepositoryInterface {
         return $recetas;
     }
 
+    // Contar recetas relacionadas con un paciente
+    public function contarPorPaciente($idPaciente) {
+
+        $sql = "SELECT COUNT(*) 
+                FROM recetas
+                WHERE id_Paciente = :idPaciente";
+
+        $consulta = $this->conexion->prepare($sql);
+
+        $consulta->execute([
+            ':idPaciente' => $idPaciente
+        ]);
+
+        return (int) $consulta->fetchColumn();
+    }
+
     // Convertir registro de la BD en objeto Receta
     private function crearObjetoReceta($fila) {
 

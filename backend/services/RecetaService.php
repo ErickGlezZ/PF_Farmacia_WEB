@@ -63,6 +63,17 @@ class RecetaService {
         return $this->recetaRepository->buscarPorFiltros($filtros);
     }
 
+
+    // Contar recetas relacionadas con un paciente
+    public function contarPorPaciente($idPaciente) {
+
+        if (!is_numeric($idPaciente) || (int)$idPaciente <= 0) {
+            throw new \InvalidArgumentException("El ID del paciente no es válido.");
+        }
+
+        return $this->recetaRepository->contarPorPaciente((int)$idPaciente);
+    }
+
     // Validar información de la receta
     private function validarReceta(Receta $receta) {
 

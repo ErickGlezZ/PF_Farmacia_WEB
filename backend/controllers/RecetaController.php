@@ -65,4 +65,9 @@ class RecetaController {
     public function filtrar($filtros) {
         return $this->recetaService->filtrarRecetas($filtros);
     }
+
+    // Contar recetas relacionadas con un paciente
+    public function contarPorPaciente($idPaciente) {
+        return $this->recetaService->contarPorPaciente($idPaciente);
+    }
 }

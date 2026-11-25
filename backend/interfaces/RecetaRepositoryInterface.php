@@ -16,4 +16,6 @@ interface RecetaRepositoryInterface {
 
     public function buscarPorFiltros($filtros);
 
+    public function contarPorPaciente($idPaciente);
+
 }
