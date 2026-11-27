@@ -6,6 +6,7 @@ class JWT
 {
     private const ALGORITMO = 'HS256';
     private const TIEMPO_EXPIRACION = 300; // 5 minutos
+    private const TIEMPO_RECUPERACION = 300; // 5 minutos
 
     /**
      * Obtener la clave secreta.
@@ -87,6 +88,56 @@ class JWT
         return $mensaje . '.' . self::base64UrlEncode($firma);
     }
 
+
+    /**
+     * Generar un JWT exclusivo para recuperar contraseñas.
+     */
+    public static function generarRecuperacion(int $idUsuario): array
+    {
+        $ahora = time();
+
+        $jti = bin2hex(random_bytes(16));
+
+        $encabezado = [
+            'alg' => self::ALGORITMO,
+            'typ' => 'JWT'
+        ];
+
+        $payload = [
+            'iss' => 'PF_Farmacia_WEB',
+            'sub' => $idUsuario,
+            'iat' => $ahora,
+            'exp' => $ahora + self::TIEMPO_RECUPERACION,
+            'jti' => $jti,
+            'tipo' => 'recuperacion_password'
+        ];
+
+        $header = self::base64UrlEncode(
+            json_encode($encabezado)
+        );
+
+        $contenido = self::base64UrlEncode(
+            json_encode($payload)
+        );
+
+        $mensaje = $header . '.' . $contenido;
+
+        $firma = hash_hmac(
+            'sha256',
+            $mensaje,
+            self::obtenerClave(),
+            true
+        );
+
+        $token = $mensaje . '.' . self::base64UrlEncode($firma);
+
+        return [
+            'token' => $token,
+            'jti' => $jti,
+            'expiracion' => $payload['exp']
+        ];
+    }
+
     /**
      * Validar un JWT.
      *
@@ -161,5 +212,25 @@ class JWT
 
             return null;
         }
+    }
+
+    /**
+     * Validar que el JWT sea exclusivamente de recuperación.
+     */
+    public static function validarRecuperacion(string $token): ?array
+    {
+        $payload = self::validar($token);
+
+        if (
+            $payload === null ||
+            ($payload['tipo'] ?? '') !== 'recuperacion_password' ||
+            !isset($payload['jti']) ||
+            !is_string($payload['jti']) ||
+            !preg_match('/^[a-f0-9]{32}$/', $payload['jti'])
+        ) {
+            return null;
+        }
+
+        return $payload;
     }
 }
