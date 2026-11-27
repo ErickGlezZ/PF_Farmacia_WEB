@@ -367,3 +367,65 @@
     }
 
 }
+
+
+/* ==========================================
+   BUSCADOR Y FILTROS DE MÉDICOS
+========================================== */
+
+.filtros-medicos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    width: 100%;
+    min-width: 0;
+}
+
+.buscador-medicos {
+    flex: 0 1 350px;
+    max-width: 350px;
+    min-width: 200px;
+}
+
+.buscador-medicos .form-control {
+    min-height: 42px;
+}
+
+.selector-filtro {
+    flex: 0 0 190px;
+    width: 190px;
+}
+
+.selector-filtro .form-select {
+    min-height: 42px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-limpiar {
+    flex: 0 0 auto;
+    min-height: 42px;
+    white-space: nowrap;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .filtros-medicos {
+        flex-wrap: wrap;
+    }
+
+    .buscador-medicos {
+        flex: 1 1 100%;
+    }
+
+    .selector-filtro {
+        flex: 1;
+        width: auto;
+    }
+
+    .btn-limpiar {
+        flex: 0 0 auto;
+    }
+}
+
