@@ -1,3 +1,4 @@
+
 <?php
 
 require_once __DIR__ . '/../../backend/config/Autoload.php';
@@ -19,6 +20,10 @@ if (
 // Recuperar mensaje de error, si existe
 $mensaje = $_SESSION['mensaje_login'] ?? '';
 unset($_SESSION['mensaje_login']);
+
+// Recuperar tipo de mensaje
+$tipoMensaje = $_SESSION['tipo_mensaje_login'] ?? 'danger';
+unset($_SESSION['tipo_mensaje_login']);
 
 // Crear token para proteger el formulario
 if (empty($_SESSION['csrf_login'])) {
@@ -52,6 +57,7 @@ if (empty($_SESSION['csrf_login'])) {
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
@@ -148,12 +154,19 @@ if (empty($_SESSION['csrf_login'])) {
                 </div>
 
 
-                <!-- Formulario visual, todavía sin procesamiento -->
+                <!-- Formulario de inicio de sesión -->
                 <form
                     method="POST"
                     action="../scripts/procesar_login.php"
                     autocomplete="on"
+                    x-data="{
+                        mostrarPassword: false,
+                        enviando: false,
+                        errorFormulario: ''
+                    }"
+                    @submit="errorFormulario = ''; if (!$el.checkValidity()) { errorFormulario = 'Completa los campos obligatorios.'; $event.preventDefault(); } else { enviando = true; }"
                 >
+
                     <input
                         type="hidden"
                         name="csrf_token"
@@ -162,14 +175,21 @@ if (empty($_SESSION['csrf_login'])) {
 
                     <?php if (!empty($mensaje)): ?>
 
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-<?= htmlspecialchars($tipoMensaje, ENT_QUOTES, 'UTF-8') ?>" role="alert">
                             <i class="bi bi-exclamation-circle me-2"></i>
                             <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') ?>
                         </div>
 
                     <?php endif; ?>
 
-
+                    <!-- Mensaje de validación con Alpine.js -->
+                    <div
+                        class="alert alert-warning"
+                        role="alert"
+                        x-show="errorFormulario"
+                        x-text="errorFormulario"
+                        x-cloak
+                    ></div>
 
 
                     <div class="form-group">
@@ -202,10 +222,7 @@ if (empty($_SESSION['csrf_login'])) {
                             Contraseña
                         </label>
 
-                        <div
-                            class="input-wrapper"
-                            x-data="{ mostrarPassword: false }"
-                        >
+                        <div class="input-wrapper">
 
                             <i class="bi bi-lock input-icon"></i>
 
@@ -233,7 +250,7 @@ if (empty($_SESSION['csrf_login'])) {
 
                     </div>
 
-                    
+
                     <!-- CAPTCHA Cloudflare Turnstile -->
                     <div class="d-flex justify-content-center my-4">
 
@@ -244,7 +261,6 @@ if (empty($_SESSION['csrf_login'])) {
                         ></div>
 
                     </div>
-                    
 
 
                     <div class="forgot-password">
@@ -255,9 +271,17 @@ if (empty($_SESSION['csrf_login'])) {
                     </div>
 
 
-                    <button type="submit" class="btn-login">
-                        Entrar al sistema
-                        <i class="bi bi-arrow-right"></i>
+                    <button
+                        type="submit"
+                        class="btn-login"
+                        :disabled="enviando"
+                    >
+                        <span x-text="enviando ? 'Iniciando sesión...' : 'Entrar al sistema'"></span>
+
+                        <i
+                            class="bi"
+                            :class="enviando ? 'bi-arrow-repeat' : 'bi-arrow-right'"
+                        ></i>
                     </button>
 
                 </form>

@@ -58,6 +58,10 @@ $fechaActual = date('d/m/Y');
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../css/dashboard.css">
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 
 <body>
@@ -77,7 +81,6 @@ $fechaActual = date('d/m/Y');
                     <small>Sistema de gestión</small>
                 </span>
             </div>
-
 
             <div class="sidebar-menu">
 
@@ -103,22 +106,20 @@ $fechaActual = date('d/m/Y');
                     <span>Recetas</span>
                 </a>
 
-
                 <?php if ($esAdministrador): ?>
 
-                <p class="menu-titulo menu-titulo-secundario">
-                    ADMINISTRACIÓN
-                </p>
+                    <p class="menu-titulo menu-titulo-secundario">
+                        ADMINISTRACIÓN
+                    </p>
 
-                <a href="usuarios/gestion_usuarios.php" class="menu-enlace">
-                    <i class="bi bi-person-gear"></i>
-                    <span>Gestión de usuarios</span>
-                </a>
+                    <a href="usuarios/gestion_usuarios.php" class="menu-enlace">
+                        <i class="bi bi-person-gear"></i>
+                        <span>Gestión de usuarios</span>
+                    </a>
 
-            <?php endif; ?>
+                <?php endif; ?>
 
             </div>
-
 
             <!-- INFORMACIÓN DEL USUARIO -->
             <div class="sidebar-user">
@@ -136,11 +137,15 @@ $fechaActual = date('d/m/Y');
 
             </div>
 
-
             <!-- CERRAR SESIÓN -->
             <div class="sidebar-footer">
 
-                <form action="../scripts/procesar_logout.php" method="POST">
+                <form
+                    action="../scripts/procesar_logout.php"
+                    method="POST"
+                    x-data="{ cerrandoSesion: false }"
+                    @submit="cerrandoSesion = true"
+                >
 
                     <input
                         type="hidden"
@@ -152,9 +157,26 @@ $fechaActual = date('d/m/Y');
                         ) ?>"
                     >
 
-                    <button type="submit" class="btn-logout">
-                        <i class="bi bi-box-arrow-left"></i>
-                        <span>Cerrar sesión</span>
+                    <button
+                        type="submit"
+                        class="btn-logout"
+                        :disabled="cerrandoSesion"
+                    >
+
+                        <template x-if="!cerrandoSesion">
+                            <span>
+                                <i class="bi bi-box-arrow-left"></i>
+                                <span>Cerrar sesión</span>
+                            </span>
+                        </template>
+
+                        <template x-if="cerrandoSesion">
+                            <span>
+                                <i class="bi bi-hourglass-split"></i>
+                                <span>Cerrando sesión...</span>
+                            </span>
+                        </template>
+
                     </button>
 
                 </form>
@@ -162,7 +184,6 @@ $fechaActual = date('d/m/Y');
             </div>
 
         </aside>
-
 
         <!-- CONTENIDO PRINCIPAL -->
         <main class="contenido">
@@ -183,7 +204,6 @@ $fechaActual = date('d/m/Y');
                     </p>
 
                 </div>
-
 
                 <div class="encabezado-derecha">
 
@@ -208,7 +228,6 @@ $fechaActual = date('d/m/Y');
                 </div>
 
             </header>
-
 
             <!-- BIENVENIDA -->
             <section class="bienvenida">
@@ -251,7 +270,6 @@ $fechaActual = date('d/m/Y');
 
             </section>
 
-
             <!-- INDICADORES -->
             <section class="seccion-estadisticas">
 
@@ -269,7 +287,6 @@ $fechaActual = date('d/m/Y');
                     </span>
 
                 </div>
-
 
                 <div class="estadisticas-grid">
 
@@ -298,7 +315,6 @@ $fechaActual = date('d/m/Y');
 
                     </article>
 
-
                     <!-- PACIENTES -->
                     <article class="tarjeta-estadistica">
 
@@ -323,7 +339,6 @@ $fechaActual = date('d/m/Y');
                         </div>
 
                     </article>
-
 
                     <!-- RECETAS -->
                     <article class="tarjeta-estadistica">
@@ -354,7 +369,6 @@ $fechaActual = date('d/m/Y');
 
             </section>
 
-
             <!-- RELACIÓN ENTRE LOS MÓDULOS -->
             <section class="seccion-relaciones">
 
@@ -374,7 +388,6 @@ $fechaActual = date('d/m/Y');
                     </span>
 
                 </div>
-
 
                 <div class="relaciones-contenedor">
 
@@ -402,12 +415,10 @@ $fechaActual = date('d/m/Y');
 
                     </article>
 
-
                     <div class="relacion-conector">
                         <i class="bi bi-arrow-left-right"></i>
                         <span>Información relacionada</span>
                     </div>
-
 
                     <!-- PACIENTES -->
                     <article class="relacion-card">
@@ -433,12 +444,10 @@ $fechaActual = date('d/m/Y');
 
                     </article>
 
-
                     <div class="relacion-conector">
                         <i class="bi bi-arrow-left-right"></i>
                         <span>Información relacionada</span>
                     </div>
-
 
                     <!-- RECETAS -->
                     <article class="relacion-card">
@@ -466,7 +475,6 @@ $fechaActual = date('d/m/Y');
 
                 </div>
 
-
                 <div class="relaciones-nota">
                     <i class="bi bi-info-circle"></i>
 
@@ -478,7 +486,6 @@ $fechaActual = date('d/m/Y');
                 </div>
 
             </section>
-
 
             <!-- ACCESOS RÁPIDOS -->
             <section class="seccion-accesos">
@@ -492,7 +499,6 @@ $fechaActual = date('d/m/Y');
                     </div>
 
                 </div>
-
 
                 <div class="accesos-grid">
 
@@ -511,7 +517,6 @@ $fechaActual = date('d/m/Y');
 
                     </a>
 
-
                     <a href="pacientes/registrar.php" class="tarjeta-acceso">
 
                         <div class="acceso-icono acceso-paciente">
@@ -526,7 +531,6 @@ $fechaActual = date('d/m/Y');
                         <i class="bi bi-arrow-up-right acceso-flecha"></i>
 
                     </a>
-
 
                     <a href="recetas/registrar.php" class="tarjeta-acceso">
 
@@ -547,7 +551,6 @@ $fechaActual = date('d/m/Y');
 
             </section>
 
-
             <!-- ACTIVIDAD RECIENTE -->
             <section class="seccion-actividad">
 
@@ -560,7 +563,6 @@ $fechaActual = date('d/m/Y');
                     </div>
 
                 </div>
-
 
                 <div class="actividad-panel">
 
@@ -586,7 +588,6 @@ $fechaActual = date('d/m/Y');
                 </div>
 
             </section>
-
 
             <!-- PIE DE PÁGINA -->
             <footer class="dashboard-footer">
