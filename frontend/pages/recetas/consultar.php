@@ -1,4 +1,3 @@
-
 <?php
 
 session_start();
@@ -18,6 +17,10 @@ AuthMiddleware::requireRole(
 // Identificar si el usuario es administrador
 $esAdministrador = ($_SESSION['rol'] ?? '') === 'Administrador';
 
+$errorListado = null;
+$medicosPorId = [];
+$pacientesPorId = [];
+
 try {
 
     // Crear la fachada
@@ -30,9 +33,7 @@ try {
     $medicos = $farmacia->listarMedicos();
     $pacientes = $farmacia->listarPacientes();
 
-    // Crear arreglos para relacionar IDs con nombres
-    $medicosPorId = [];
-
+    // Crear arreglo de médicos por ID
     foreach ($medicos as $medico) {
 
         $id = $medico->getIdMedico();
@@ -44,8 +45,7 @@ try {
         $medicosPorId[$id] = trim($nombreCompleto);
     }
 
-    $pacientesPorId = [];
-
+    // Crear arreglo de pacientes por ID
     foreach ($pacientes as $paciente) {
 
         $id = $paciente->getIdPaciente();
@@ -56,8 +56,6 @@ try {
 
         $pacientesPorId[$id] = trim($nombreCompleto);
     }
-
-    $errorListado = null;
 
 } catch (Throwable $e) {
 
@@ -217,19 +215,56 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                 </div>
 
 
-                <!-- BUSCADOR -->
+                <!-- BUSCADOR Y FILTROS -->
                 <div class="medicos-herramientas">
 
-                    <div class="buscador-medicos">
+                    <div class="filtros-medicos">
 
-                        <i class="bi bi-search"></i>
+                        <div class="buscador-medicos">
 
-                        <input
-                            type="text"
-                            id="buscarReceta"
-                            class="form-control"
-                            placeholder="Buscar por medicamento, médico o paciente..."
+                            <i class="bi bi-search"></i>
+
+                            <input
+                                type="text"
+                                id="buscarReceta"
+                                class="form-control"
+                                placeholder="Buscar receta..."
+                            >
+
+                        </div>
+
+                        <!-- SELECTOR DE FILTRO -->
+                        <div class="selector-filtro">
+
+                            <select
+                                id="filtroReceta"
+                                class="form-select"
+                                aria-label="Seleccionar campo de búsqueda"
+                            >
+
+                                <option value="">Búsqueda general</option>
+                                <option value="id">ID</option>
+                                <option value="medicamento">Medicamento</option>
+                                <option value="paciente">Paciente</option>
+                                <option value="medico">Médico</option>
+                                <option value="fecha">Fecha</option>
+                                <option value="cantidad">Cantidad</option>
+                                <option value="unidad">Unidad</option>
+                                <option value="indicaciones">Indicaciones</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- LIMPIAR FILTROS -->
+                        <button
+                            type="button"
+                            id="limpiarFiltrosReceta"
+                            class="btn btn-outline-secondary btn-limpiar"
                         >
+                            <i class="bi bi-eraser"></i>
+                            Limpiar filtros
+                        </button>
 
                     </div>
 
@@ -290,7 +325,16 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
 
                                         ?>
 
-                                        <tr>
+                                        <tr
+                                            data-id="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-medicamento="<?= htmlspecialchars($medicamento, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-paciente="<?= htmlspecialchars($pacienteTexto, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-medico="<?= htmlspecialchars($medicoTexto, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-fecha="<?= htmlspecialchars($fecha, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-cantidad="<?= htmlspecialchars((string)$cantidad, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-unidad="<?= htmlspecialchars($unidad, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-indicaciones="<?= htmlspecialchars($indicaciones, ENT_QUOTES, 'UTF-8') ?>"
+                                        >
 
                                             <td>
                                                 <?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>
@@ -367,33 +411,31 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                     >
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
-        
-                                                    
 
 
-                                                    <!-- FORMULARIO ELIMINAR: SOLO ADMINISTRADOR -->
+                                                    <!-- ELIMINAR: SOLO ADMINISTRADOR -->
                                                     <?php if ($esAdministrador): ?>
 
                                                         <form
-                                                        action="../../scripts/procesar_bajas_recetas.php"
-                                                        method="POST"
-                                                        class="d-inline"
-                                                        onsubmit="return confirm('¿Estás seguro de eliminar esta receta?');"
-                                                    >
-
-                                                        <input
-                                                            type="hidden"
-                                                            name="ID_Receta"
-                                                            value="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                                            action="../../scripts/procesar_bajas_recetas.php"
+                                                            method="POST"
+                                                            class="d-inline"
+                                                            onsubmit="return confirm('¿Estás seguro de eliminar esta receta?');"
                                                         >
 
-                                                        <button
-                                                            type="submit"
-                                                            class="btn btn-eliminar"
-                                                            title="Eliminar receta"
-                                                        >
-                                                            <i class="bi bi-trash3"></i>
-                                                        </button>
+                                                            <input
+                                                                type="hidden"
+                                                                name="ID_Receta"
+                                                                value="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                                            >
+
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-eliminar"
+                                                                title="Eliminar receta"
+                                                            >
+                                                                <i class="bi bi-trash3"></i>
+                                                            </button>
 
                                                         </form>
 
@@ -409,7 +451,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
 
                                 <?php else: ?>
 
-                                    <tr>
+                                    <tr data-empty-state="true">
                                         <td colspan="7" class="text-center py-4">
                                             No hay recetas registradas.
                                         </td>
@@ -548,76 +590,146 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
     <!-- BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- UMBRELLA JS -->
+    <script src="https://cdn.jsdelivr.net/npm/umbrellajs@3.3.3/umbrella.min.js"></script>
+
 
     <!-- FUNCIONALIDAD -->
     <script>
 
-        // BUSCADOR
+        // ELEMENTOS
         const buscarReceta = document.getElementById('buscarReceta');
+        const filtroReceta = document.getElementById('filtroReceta');
+        const limpiarFiltrosReceta = document.getElementById('limpiarFiltrosReceta');
+        const tablaRecetas = document.getElementById('tablaRecetas');
+        const modalDetalles = document.getElementById('modalDetalles');
 
-        buscarReceta.addEventListener('input', function () {
 
-            const texto = this.value.toLowerCase();
+        // NORMALIZAR TEXTO PARA IGNORAR MAYÚSCULAS Y ACENTOS
+        function normalizarTexto(texto) {
 
-            const filas = document.querySelectorAll('#tablaRecetas tr');
+            return texto
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
 
-            filas.forEach(function (fila) {
+        }
 
-                const contenido = fila.textContent.toLowerCase();
 
-                fila.style.display = contenido.includes(texto) ? '' : 'none';
+        // APLICAR BÚSQUEDA Y FILTROS
+        function aplicarFiltroRecetas() {
+
+            if (!tablaRecetas) return;
+
+            const texto = normalizarTexto(buscarReceta.value);
+            const campo = filtroReceta.value;
+
+            u('#tablaRecetas tr').each(function (fila) {
+
+                // Mantener visible el mensaje cuando no hay registros
+                if (fila.dataset.emptyState === 'true') {
+
+                    fila.style.display = '';
+                    return;
+
+                }
+
+                const datos = fila.dataset;
+                let contenido = '';
+
+                // Búsqueda general
+                if (campo === '') {
+
+                    contenido = fila.textContent;
+
+                } else {
+
+                    // Búsqueda por campo seleccionado
+                    contenido = datos[campo] || '';
+
+                }
+
+                const coincide = normalizarTexto(contenido).includes(texto);
+
+                fila.style.display = coincide ? '' : 'none';
 
             });
 
-        });
+        }
+
+
+        // EVENTOS DEL BUSCADOR Y SELECTOR
+        if (buscarReceta && filtroReceta && tablaRecetas) {
+
+            buscarReceta.addEventListener('input', aplicarFiltroRecetas);
+
+            filtroReceta.addEventListener('change', aplicarFiltroRecetas);
+
+        }
+
+
+        // LIMPIAR FILTROS
+        if (limpiarFiltrosReceta) {
+
+            limpiarFiltrosReceta.addEventListener('click', function () {
+
+                buscarReceta.value = '';
+                filtroReceta.value = '';
+
+                aplicarFiltroRecetas();
+
+                buscarReceta.focus();
+
+            });
+
+        }
 
 
         // CARGAR DATOS EN EL MODAL
-        const modalDetalles = document.getElementById('modalDetalles');
+        if (modalDetalles) {
 
-        modalDetalles.addEventListener('show.bs.modal', function (evento) {
+            modalDetalles.addEventListener('show.bs.modal', function (evento) {
 
-            const boton = evento.relatedTarget;
+                const boton = evento.relatedTarget;
 
-            const id = boton.dataset.id;
-            const medicamento = boton.dataset.medicamento;
-            const medico = boton.dataset.medico;
-            const paciente = boton.dataset.paciente;
-            const fecha = boton.dataset.fecha;
-            const cantidad = boton.dataset.cantidad;
-            const unidad = boton.dataset.unidad;
-            const indicaciones = boton.dataset.indicaciones;
+                if (!boton) return;
 
-            document.getElementById('detalleId').textContent = id;
+                const datos = boton.dataset;
 
-            document.getElementById('detalleMedicamento').textContent =
-                medicamento;
+                document.getElementById('detalleId').textContent = datos.id || '-';
 
-            document.getElementById('detalleFecha').textContent =
-                fecha;
+                document.getElementById('detalleMedicamento').textContent =
+                    datos.medicamento || '-';
 
-            document.getElementById('detalleMedicamentoCampo').textContent =
-                medicamento;
+                document.getElementById('detalleFecha').textContent =
+                    datos.fecha || '-';
 
-            document.getElementById('detallePaciente').textContent =
-                paciente;
+                document.getElementById('detalleMedicamentoCampo').textContent =
+                    datos.medicamento || '-';
 
-            document.getElementById('detalleMedico').textContent =
-                medico;
+                document.getElementById('detallePaciente').textContent =
+                    datos.paciente || '-';
 
-            document.getElementById('detalleFechaCampo').textContent =
-                fecha;
+                document.getElementById('detalleMedico').textContent =
+                    datos.medico || '-';
 
-            document.getElementById('detalleCantidad').textContent =
-                cantidad;
+                document.getElementById('detalleFechaCampo').textContent =
+                    datos.fecha || '-';
 
-            document.getElementById('detalleUnidad').textContent =
-                unidad;
+                document.getElementById('detalleCantidad').textContent =
+                    datos.cantidad || '-';
 
-            document.getElementById('detalleIndicaciones').textContent =
-                indicaciones;
+                document.getElementById('detalleUnidad').textContent =
+                    datos.unidad || '-';
 
-        });
+                document.getElementById('detalleIndicaciones').textContent =
+                    datos.indicaciones || '-';
+
+            });
+
+        }
+
 
     </script>
 

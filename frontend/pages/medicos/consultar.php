@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../../backend/config/autoload.php';
 use App\facade\FarmaciaFacade;
 use App\Middleware\AuthMiddleware;
 
-// Proteger el dashboard
+// Proteger el listado
 AuthMiddleware::requireRole(
     ['Administrador', 'Empleado'],
     '../login.php'
@@ -184,21 +184,63 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                 </div>
 
 
-                <!-- BUSCADOR -->
+                <!-- BUSCADOR Y FILTROS -->
                 <div class="medicos-herramientas">
 
-                    <div class="buscador-medicos">
+                    <div class="filtros-medicos">
 
-                        <i class="bi bi-search"></i>
+                        <!-- BARRA DE BÚSQUEDA -->
+                        <div class="buscador-medicos">
 
-                        <input
-                            type="text"
-                            id="buscarMedico"
-                            class="form-control"
-                            placeholder="Buscar por nombre, SSN o especialidad..."
+                            <i class="bi bi-search"></i>
+
+                            <input
+                                type="text"
+                                id="buscarMedico"
+                                class="form-control"
+                                placeholder="Buscar médico..."
+                            >
+
+                        </div>
+
+
+                        <!-- SELECTOR DE CAMPO -->
+                        <div class="selector-filtro">
+
+                            <select
+                                id="filtroMedico"
+                                class="form-select"
+                                aria-label="Seleccionar campo de búsqueda"
+                            >
+
+                                <option value="">Búsqueda general</option>
+                                <option value="id">ID</option>
+                                <option value="nombre">Nombre</option>
+                                <option value="primerAp">Primer apellido</option>
+                                <option value="segundoAp">Segundo apellido</option>
+                                <option value="ssn">SSN</option>
+                                <option value="especialidad">Especialidad</option>
+                                <option value="experiencia">Años de experiencia</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- BOTÓN LIMPIAR -->
+                        <button
+                            type="button"
+                            id="limpiarFiltros"
+                            class="btn btn-outline-secondary btn-limpiar"
                         >
 
+                            <i class="bi bi-eraser"></i>
+                            Limpiar filtros
+
+                        </button>
+
                     </div>
+
 
                     <span class="total-registros">
                         <i class="bi bi-person-badge"></i>
@@ -249,7 +291,15 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                         );
                                         ?>
 
-                                        <tr>
+                                        <tr
+                                            data-id="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-nombre="<?= htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-primer-ap="<?= htmlspecialchars($primerAp, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-segundo-ap="<?= htmlspecialchars($segundoAp, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-ssn="<?= htmlspecialchars($ssn, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-especialidad="<?= htmlspecialchars($especialidad, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-experiencia="<?= htmlspecialchars((string)$experiencia, ENT_QUOTES, 'UTF-8') ?>"
+                                        >
 
                                             <td>
                                                 <?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>
@@ -324,7 +374,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
 
-                                                    
+
                                                     <!-- FORMULARIO ELIMINAR: SOLO ADMINISTRADOR -->
                                                     <?php if ($esAdministrador): ?>
 
@@ -353,7 +403,6 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
 
                                                     <?php endif; ?>
 
-
                                                 </div>
 
                                             </td>
@@ -364,7 +413,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
 
                                 <?php else: ?>
 
-                                    <tr>
+                                    <tr data-empty-state="true">
                                         <td colspan="6" class="text-center py-4">
                                             No hay médicos registrados.
                                         </td>
@@ -498,62 +547,171 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
     <!-- BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- UMBRELLA JS -->
+    <script src="https://cdn.jsdelivr.net/npm/umbrellajs@3.3.3/umbrella.min.js"></script>
 
-    <!-- FUNCIONALIDAD -->
+
+    <!-- FUNCIONALIDAD CON UMBRELLA JS -->
     <script>
 
-        // BUSCADOR
-        const buscarMedico = document.getElementById('buscarMedico');
+    /* ==========================================
+       BUSCADOR, FILTROS Y DETALLES DE MÉDICOS
+    ========================================== */
 
-        buscarMedico.addEventListener('input', function () {
+    // Obtener los elementos principales
+    const buscador = document.getElementById('buscarMedico');
+    const filtro = document.getElementById('filtroMedico');
+    const botonLimpiar = document.getElementById('limpiarFiltros');
+    const tabla = document.getElementById('tablaMedicos');
+    const modalDetalles = document.getElementById('modalDetalles');
 
-            const texto = this.value.toLowerCase();
 
-            const filas = document.querySelectorAll('#tablaMedicos tr');
+    // ==========================================
+    // NORMALIZAR TEXTO
+    // Permite buscar sin importar acentos o mayúsculas
+    // ==========================================
 
-            filas.forEach(function (fila) {
+    function normalizarTexto(texto) {
 
-                const contenido = fila.textContent.toLowerCase();
+        return texto
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim();
 
-                fila.style.display = contenido.includes(texto) ? '' : 'none';
+    }
 
-            });
+
+    // ==========================================
+    // APLICAR BÚSQUEDA Y FILTROS
+    // ==========================================
+
+    function aplicarFiltro() {
+
+        const texto = normalizarTexto(buscador.value);
+        const campo = filtro.value;
+
+        if (!tabla) {
+            return;
+        }
+
+        // Umbrella JS recorre las filas de la tabla
+        u('#tablaMedicos tr').each(function (fila) {
+
+            // Mantener visible el mensaje cuando no hay registros
+            if (fila.dataset.emptyState === 'true') {
+                fila.style.display = '';
+                return;
+            }
+
+            const datos = fila.dataset;
+            let contenido = '';
+
+            // Si no se selecciona campo, buscar en toda la fila
+            if (campo === '') {
+
+                contenido = fila.textContent;
+
+            } else {
+
+                // Buscar únicamente en el campo seleccionado
+                contenido = datos[campo] || '';
+
+            }
+
+            const coincide = normalizarTexto(contenido).includes(texto);
+
+            fila.style.display = coincide ? '' : 'none';
 
         });
 
+    }
 
-        // CARGAR DATOS EN EL MODAL
-        const modalDetalles = document.getElementById('modalDetalles');
+
+    // ==========================================
+    // EVENTOS DEL BUSCADOR Y SELECTOR
+    // ==========================================
+
+    if (buscador && filtro && tabla) {
+
+        buscador.addEventListener('input', aplicarFiltro);
+
+        filtro.addEventListener('change', aplicarFiltro);
+
+    }
+
+
+    // ==========================================
+    // LIMPIAR FILTROS
+    // ==========================================
+
+    if (botonLimpiar) {
+
+        botonLimpiar.addEventListener('click', function () {
+
+            // Vaciar el texto de búsqueda
+            buscador.value = '';
+
+            // Regresar a búsqueda general
+            filtro.value = '';
+
+            // Mostrar nuevamente todos los médicos
+            aplicarFiltro();
+
+            // Colocar el cursor en el buscador
+            buscador.focus();
+
+        });
+
+    }
+
+
+    // ==========================================
+    // DETALLES DEL MÉDICO
+    // ==========================================
+
+    if (modalDetalles) {
 
         modalDetalles.addEventListener('show.bs.modal', function (evento) {
 
             const boton = evento.relatedTarget;
 
-            const id = boton.dataset.id;
-            const ssn = boton.dataset.ssn;
-            const nombre = boton.dataset.nombre;
-            const primerAp = boton.dataset.primerAp;
-            const segundoAp = boton.dataset.segundoAp;
-            const especialidad = boton.dataset.especialidad;
-            const experiencia = boton.dataset.experiencia;
+            if (!boton) {
+                return;
+            }
 
-            document.getElementById('detalleId').textContent = id;
-            document.getElementById('detalleSSN').textContent = ssn;
+            // Leer los atributos del botón seleccionado
+            const datos = boton.dataset;
+
+            // Actualizar información del modal
+            document.getElementById('detalleId').textContent = datos.id || '-';
+
+            document.getElementById('detalleSSN').textContent = datos.ssn || '-';
 
             document.getElementById('detalleNombre').textContent =
-                nombre + ' ' + primerAp;
+                (datos.nombre || '') + ' ' + (datos.primerAp || '');
 
             document.getElementById('detalleEspecialidad').textContent =
-                especialidad;
+                datos.especialidad || '-';
 
-            document.getElementById('detalleNombreCampo').textContent = nombre;
-            document.getElementById('detallePrimerAp').textContent = primerAp;
-            document.getElementById('detalleSegundoAp').textContent = segundoAp;
-            document.getElementById('detalleEspecialidadCampo').textContent = especialidad;
+            document.getElementById('detalleNombreCampo').textContent =
+                datos.nombre || '-';
+
+            document.getElementById('detallePrimerAp').textContent =
+                datos.primerAp || '-';
+
+            document.getElementById('detalleSegundoAp').textContent =
+                datos.segundoAp || '-';
+
+            document.getElementById('detalleEspecialidadCampo').textContent =
+                datos.especialidad || '-';
+
             document.getElementById('detalleExperiencia').textContent =
-                experiencia + ' años';
+                (datos.experiencia || '0') + ' años';
 
         });
+
+    }
 
     </script>
 

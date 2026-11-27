@@ -17,32 +17,29 @@ AuthMiddleware::requireRole(
 // Identificar si el usuario es administrador
 $esAdministrador = ($_SESSION['rol'] ?? '') === 'Administrador';
 
+$errorListado = null;
+$medicosPorId = [];
+
 try {
 
     // Crear la fachada
     $farmacia = new FarmaciaFacade();
 
-    
+    // Obtener pacientes y médicos
     $pacientes = $farmacia->listarPacientes();
-
-    
     $medicos = $farmacia->listarMedicos();
 
-    
-    $medicosPorId = [];
+    // Crear relación de médicos por ID
+    foreach ($medicos as $medico) {
 
-foreach ($medicos as $medico) {
+        $id = $medico->getIdMedico();
 
-    $id = $medico->getIdMedico();
+        $nombreCompleto = $medico->getNombre() . ' ' .
+                          $medico->getPrimerAp() . ' ' .
+                          $medico->getSegundoApe();
 
-    $nombreCompleto = $medico->getNombre() . ' ' .
-                      $medico->getPrimerAp() . ' ' .
-                      $medico->getSegundoApe();
-
-    $medicosPorId[$id] = trim($nombreCompleto);
-}
-
-$errorListado = null;
+        $medicosPorId[$id] = trim($nombreCompleto);
+    }
 
 } catch (Throwable $e) {
 
@@ -200,19 +197,60 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                 </div>
 
 
-                <!-- BUSCADOR -->
+                <!-- BUSCADOR Y FILTROS -->
                 <div class="medicos-herramientas">
 
-                    <div class="buscador-medicos">
+                    <div class="filtros-medicos">
 
-                        <i class="bi bi-search"></i>
+                        <div class="buscador-medicos">
 
-                        <input
-                            type="text"
-                            id="buscarPaciente"
-                            class="form-control"
-                            placeholder="Buscar por nombre, SSN o colonia..."
+                            <i class="bi bi-search"></i>
+
+                            <input
+                                type="text"
+                                id="buscarPaciente"
+                                class="form-control"
+                                placeholder="Buscar paciente..."
+                            >
+
+                        </div>
+
+                        <!-- SELECTOR DE FILTRO -->
+                        <div class="selector-filtro">
+
+                            <select
+                                id="filtroPaciente"
+                                class="form-select"
+                                aria-label="Seleccionar campo de búsqueda"
+                            >
+
+                                <option value="">Búsqueda general</option>
+                                <option value="id">ID</option>
+                                <option value="nombre">Nombre</option>
+                                <option value="primerAp">Primer apellido</option>
+                                <option value="segundoAp">Segundo apellido</option>
+                                <option value="ssn">SSN</option>
+                                <option value="edad">Edad</option>
+                                <option value="medico">Médico de cabecera</option>
+                                <option value="calle">Calle</option>
+                                <option value="numero">Número</option>
+                                <option value="colonia">Colonia</option>
+                                <option value="codigoPostal">Código postal</option>
+                                <option value="recetas">Recetas</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- LIMPIAR FILTROS -->
+                        <button
+                            type="button"
+                            id="limpiarFiltrosPaciente"
+                            class="btn btn-outline-secondary btn-limpiar"
                         >
+                            <i class="bi bi-eraser"></i>
+                            Limpiar filtros
+                        </button>
 
                     </div>
 
@@ -253,7 +291,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                             // Obtener los datos del paciente
                                             $id = $paciente->getIdPaciente();
 
-                                            // Obtener cantidad de recetas relacionadas con el paciente
+                                            // Obtener cantidad de recetas relacionadas
                                             $totalRecetas = $farmacia->contarRecetasPaciente($id);
 
                                             $ssn = $paciente->getSSN();
@@ -273,13 +311,26 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                 substr($primerAp, 0, 1)
                                             );
 
-                                            // Obtener el nombre del médico de cabecera
+                                            // Obtener médico de cabecera
                                             $medicoTexto = ($idMedico !== null && isset($medicosPorId[$idMedico]))
                                                 ? $medicosPorId[$idMedico]
                                                 : 'Sin asignar';
                                         ?>
 
-                                        <tr>
+                                        <tr
+                                            data-id="<?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-nombre="<?= htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-primer-ap="<?= htmlspecialchars($primerAp, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-segundo-ap="<?= htmlspecialchars($segundoAp, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-ssn="<?= htmlspecialchars($ssn, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-edad="<?= htmlspecialchars((string)$edad, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-medico="<?= htmlspecialchars($medicoTexto, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-calle="<?= htmlspecialchars($calle, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-numero="<?= htmlspecialchars($numero, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-colonia="<?= htmlspecialchars($colonia, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-codigo-postal="<?= htmlspecialchars($codigoPostal, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-recetas="<?= htmlspecialchars((string)$totalRecetas, ENT_QUOTES, 'UTF-8') ?>"
+                                        >
 
                                             <td>
                                                 <?= htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8') ?>
@@ -319,6 +370,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                             <td>
                                                 <?= htmlspecialchars((string)$medicoTexto, ENT_QUOTES, 'UTF-8') ?>
                                             </td>
+
                                             <td class="text-center">
                                                 <span class="badge bg-primary">
                                                     <?= $totalRecetas ?>
@@ -363,7 +415,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                     </a>
 
 
-                                                    <!-- FORMULARIO ELIMINAR: SOLO ADMINISTRADOR -->
+                                                    <!-- ELIMINAR: SOLO ADMINISTRADOR -->
                                                     <?php if ($esAdministrador): ?>
 
                                                         <form
@@ -372,7 +424,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
                                                             class="d-inline"
                                                             onsubmit="return confirmarEliminacion(
                                                                 <?= $totalRecetas ?>,
-                                                                '<?= htmlspecialchars($nombre . ' ' . $primerAp, ENT_QUOTES, 'UTF-8') ?>'
+                                                                <?= htmlspecialchars(json_encode($nombre . ' ' . $primerAp), ENT_QUOTES, 'UTF-8') ?>
                                                             );"
                                                         >
 
@@ -404,7 +456,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
 
                                 <?php else: ?>
 
-                                    <tr>
+                                    <tr data-empty-state="true">
                                         <td colspan="7" class="text-center py-4">
                                             No hay pacientes registrados.
                                         </td>
@@ -558,71 +610,138 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
     <!-- BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- UMBRELLA JS -->
+    <script src="https://cdn.jsdelivr.net/npm/umbrellajs@3.3.3/umbrella.min.js"></script>
+
 
     <!-- FUNCIONALIDAD -->
     <script>
 
-        // BUSCADOR
+        // ELEMENTOS
         const buscarPaciente = document.getElementById('buscarPaciente');
+        const filtroPaciente = document.getElementById('filtroPaciente');
+        const limpiarFiltrosPaciente = document.getElementById('limpiarFiltrosPaciente');
+        const tablaPacientes = document.getElementById('tablaPacientes');
+        const modalDetalles = document.getElementById('modalDetalles');
 
-        buscarPaciente.addEventListener('input', function () {
 
-            const texto = this.value.toLowerCase();
+        // NORMALIZAR TEXTO PARA IGNORAR MAYÚSCULAS Y ACENTOS
+        function normalizarTexto(texto) {
 
-            const filas = document.querySelectorAll('#tablaPacientes tr');
+            return texto
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
 
-            filas.forEach(function (fila) {
+        }
 
-                const contenido = fila.textContent.toLowerCase();
 
-                fila.style.display = contenido.includes(texto) ? '' : 'none';
+        // APLICAR BÚSQUEDA Y FILTROS
+        function aplicarFiltroPacientes() {
+
+            if (!tablaPacientes) return;
+
+            const texto = normalizarTexto(buscarPaciente.value);
+            const campo = filtroPaciente.value;
+
+            u('#tablaPacientes tr').each(function (fila) {
+
+                // Mantener visible el mensaje cuando no hay registros
+                if (fila.dataset.emptyState === 'true') {
+
+                    fila.style.display = '';
+                    return;
+
+                }
+
+                const datos = fila.dataset;
+                let contenido = '';
+
+                // Búsqueda general
+                if (campo === '') {
+
+                    contenido = fila.textContent;
+
+                } else {
+
+                    // Búsqueda por campo seleccionado
+                    contenido = datos[campo] || '';
+
+                }
+
+                const coincide = normalizarTexto(contenido).includes(texto);
+
+                fila.style.display = coincide ? '' : 'none';
 
             });
 
-        });
+        }
+
+
+        // EVENTOS DEL BUSCADOR Y SELECTOR
+        if (buscarPaciente && filtroPaciente && tablaPacientes) {
+
+            buscarPaciente.addEventListener('input', aplicarFiltroPacientes);
+
+            filtroPaciente.addEventListener('change', aplicarFiltroPacientes);
+
+        }
+
+
+        // LIMPIAR FILTROS
+        if (limpiarFiltrosPaciente) {
+
+            limpiarFiltrosPaciente.addEventListener('click', function () {
+
+                buscarPaciente.value = '';
+                filtroPaciente.value = '';
+
+                aplicarFiltroPacientes();
+
+                buscarPaciente.focus();
+
+            });
+
+        }
 
 
         // CARGAR DATOS EN EL MODAL
-        const modalDetalles = document.getElementById('modalDetalles');
+        if (modalDetalles) {
 
-        modalDetalles.addEventListener('show.bs.modal', function (evento) {
+            modalDetalles.addEventListener('show.bs.modal', function (evento) {
 
-            const boton = evento.relatedTarget;
+                const boton = evento.relatedTarget;
 
-            const id = boton.dataset.id;
-            const ssn = boton.dataset.ssn;
-            const nombre = boton.dataset.nombre;
-            const primerAp = boton.dataset.primerAp;
-            const segundoAp = boton.dataset.segundoAp;
-            const edad = boton.dataset.edad;
-            const medico = boton.dataset.medico;
-            const calle = boton.dataset.calle;
-            const numero = boton.dataset.numero;
-            const colonia = boton.dataset.colonia;
-            const codigoPostal = boton.dataset.codigoPostal;
+                if (!boton) return;
 
-            document.getElementById('detalleId').textContent = id;
-            document.getElementById('detalleSSN').textContent = ssn;
+                const datos = boton.dataset;
 
-            document.getElementById('detalleNombre').textContent =
-                nombre + ' ' + primerAp;
+                document.getElementById('detalleId').textContent = datos.id || '-';
+                document.getElementById('detalleSSN').textContent = datos.ssn || '-';
 
-            document.getElementById('detalleEdad').textContent =
-                edad + ' años';
+                document.getElementById('detalleNombre').textContent =
+                    (datos.nombre || '') + ' ' + (datos.primerAp || '');
 
-            document.getElementById('detalleNombreCampo').textContent = nombre;
-            document.getElementById('detallePrimerAp').textContent = primerAp;
-            document.getElementById('detalleSegundoAp').textContent = segundoAp;
-            document.getElementById('detalleEdadCampo').textContent = edad + ' años';
-            document.getElementById('detalleMedico').textContent = medico;
-            document.getElementById('detalleCalle').textContent = calle;
-            document.getElementById('detalleNumero').textContent = numero;
-            document.getElementById('detalleColonia').textContent = colonia;
-            document.getElementById('detalleCodigoPostal').textContent = codigoPostal;
+                document.getElementById('detalleEdad').textContent =
+                    (datos.edad || '-') + ' años';
 
-        });
+                document.getElementById('detalleNombreCampo').textContent = datos.nombre || '-';
+                document.getElementById('detallePrimerAp').textContent = datos.primerAp || '-';
+                document.getElementById('detalleSegundoAp').textContent = datos.segundoAp || '-';
+                document.getElementById('detalleEdadCampo').textContent = (datos.edad || '-') + ' años';
+                document.getElementById('detalleMedico').textContent = datos.medico || '-';
+                document.getElementById('detalleCalle').textContent = datos.calle || '-';
+                document.getElementById('detalleNumero').textContent = datos.numero || '-';
+                document.getElementById('detalleColonia').textContent = datos.colonia || '-';
+                document.getElementById('detalleCodigoPostal').textContent = datos.codigoPostal || '-';
 
-        // Confirmar eliminación de paciente
+            });
+
+        }
+
+
+        // CONFIRMAR ELIMINACIÓN DE PACIENTE
         function confirmarEliminacion(totalRecetas, nombrePaciente) {
 
             let mensaje = '';
@@ -642,6 +761,7 @@ if (!in_array($tipoMensaje, ['success', 'danger', 'warning', 'info'], true)) {
             }
 
             return confirm(mensaje);
+
         }
 
     </script>
